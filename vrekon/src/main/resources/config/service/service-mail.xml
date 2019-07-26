@@ -1,0 +1,23 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<bean id="mailSender" class="com.mpc.report.service.impl.MailSenderImpl">
+		<property name="host" value="${email.host}" />
+		<property name="from" value="${email.from}" />
+		<property name="username" value="${email.username}" />
+		<property name="password" value="${email.password}" />
+		<property name="protocol" value="${email.protocol}" />
+		<property name="port" value="${email.port}" />
+		<property name="debug" value="${email.debug}" />
+		<property name="authentication" value="${email.authentication}" />
+		<property name="javaMailProperties" value="${email.properties}" />
+	</bean> 
+	
+	<bean id="emailServiceImpl" class="com.mpc.report.service.impl.EmailServiceImpl">
+		<property name="mailSender" ref="mailSender" />
+		<property name="message" >
+			<bean id="simpleMailMessage" class="org.springframework.mail.SimpleMailMessage"/>
+		</property>
+	</bean>
+</beans>

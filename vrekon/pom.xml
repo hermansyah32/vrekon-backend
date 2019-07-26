@@ -1,0 +1,259 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mpc</groupId>
+  <artifactId>vrekon</artifactId>
+  <version>v1.0-alfa-1</version>
+  <packaging>war</packaging>
+  <name>Rekon Application</name>
+  <url>http://maven.apache.org</url>
+  <organization>
+  	<name>PT. Multipolar Technology, Tbk</name>
+  	<url>www.multipolar.com</url>
+  </organization>
+  
+  <properties>
+		<!-- Spring -->
+		<spring.version>3.2.4.RELEASE</spring.version>
+		<spring.integration.version>3.0.4.RELEASE</spring.integration.version>
+
+		<!-- -->
+		<spring.data.version>1.4.3.RELEASE</spring.data.version> 
+		<spring.batch.version>3.0.3.RELEASE</spring.batch.version>
+		<spring.ws.version>2.1.4.RELEASE</spring.ws.version>
+		
+		<!-- Java EE / Java SE dependencies -->
+		<jsp.version>2.2</jsp.version>
+		<jstl.version>1.2</jstl.version>
+		<servlet.version>2.5</servlet.version>
+
+		<!-- Test -->
+		<junit.version>4.9</junit.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<aspectj.version>1.7.4</aspectj.version>
+		<hibernate.entitymanager.version>4.2.2.Final</hibernate.entitymanager.version>
+		<hibernate.validator.version>4.3.1.Final</hibernate.validator.version>
+		<commons.dbcp.version>1.4</commons.dbcp.version>
+		<maven.test.skip>true</maven.test.skip>
+	</properties>
+	
+	<dependencies>
+		<!-- Spring Framework - Core -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+	
+		<!-- Spring Framework - Integration -->
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-core</artifactId>
+			<version>${spring.integration.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-rmi</artifactId>
+			<version>${spring.integration.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+				
+		<!-- Spring WS -->
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>spring-ws-core</artifactId>
+			<version>${spring.ws.version}</version>
+		</dependency>
+		 <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-ws-support</artifactId>
+            <version>${spring.ws.version}</version>
+        </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		    <version>${spring.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.ws</groupId>
+		    <artifactId>spring-ws-security</artifactId>
+		    <version>2.1.4.RELEASE</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.ws.security</groupId>
+		    <artifactId>wss4j</artifactId>
+		    <version>1.6.15</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>com.sun.xml.stream</groupId>
+		    <artifactId>sjsxp</artifactId>
+		    <version>1.0.1</version>
+		</dependency>
+		
+		<!-- Spring Aspect -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.6.11</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.6.11</version>
+		</dependency>
+
+		<!-- Spring Data -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring.data.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<!-- Spring Batch -->
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+			<artifactId>spring-batch-core</artifactId>
+			<version>${spring.batch.version}</version>
+		</dependency>
+
+		<!-- Java EE / Java SE dependencies -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>${jsp.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+		   <groupId>commons-fileupload</groupId>
+		   <artifactId>commons-fileupload</artifactId>
+		   <version>1.2.1</version> <!-- makesure correct version here -->
+		</dependency>
+
+		<!-- Hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.entitymanager.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate.validator.version}</version>
+		</dependency>
+
+		<!-- Database -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>${commons.dbcp.version}</version>
+		</dependency>
+		
+		<!-- JPos -->
+		<dependency>
+			<groupId>org.jpos</groupId>
+			<artifactId>jpos</artifactId>
+			<systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/jpos.jar</systemPath>
+			<scope>system</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+
+		<!-- Testing -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+		  	<groupId>mysql</groupId>
+		  	<artifactId>mysql-connector-java</artifactId>
+		  	<version>5.1.17</version>
+       </dependency>
+       <dependency>
+			<groupId>commons-configuration</groupId>
+		  	<artifactId>commons-configuration</artifactId>
+		  	<version>1.10</version>
+	   </dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jpos</groupId>
+				<artifactId>jpos</artifactId>
+				<version>1.6.6</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>
