@@ -10,4 +10,9 @@ public class RekonCompareKey {
 	public void setKeyName(String keyName) {
 		this.keyName = keyName;
 	}
+
+	@Override
+	public String toString() {
+		return "RekonCompareKey [keyName=" + keyName + "]";
+	}
 }

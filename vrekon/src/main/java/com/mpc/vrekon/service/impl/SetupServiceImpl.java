@@ -45,25 +45,25 @@ public class SetupServiceImpl implements SetupService{
 		tmpInstitusiList = institusiListRepository.findByIdInstitusi(institusiList.getIdInstitusi());
 		
 		if(tmpInstitusiList == null){			
-			
 			institusiListRepository.save(institusiList);
 			requestResponse.setStatus("Success");
 			requestResponse.setMessage("Data Added "+institusiList.toString());
 		}else{
-			requestResponse.setStatus("Failed");
-			requestResponse.setMessage("Duplicate ID Institusi");
+			institusiListRepository.save(institusiList);
+			requestResponse.setStatus("Success");
+			requestResponse.setMessage("Data is updated "+institusiList.toString());
 		}
 		
 		return requestResponse;
 	}
 	
-	public RequestResponse deleteInstitusi(InstitusiList institusiList){
+	public RequestResponse deleteInstitusi(Integer idInstitusi){
 		RequestResponse requestResponse = new RequestResponse();
 		
 		try {
-			institusiListRepository.delete(institusiList);
+			institusiListRepository.delete(idInstitusi);
 			requestResponse.setStatus("Success");
-			requestResponse.setMessage("Data Added "+institusiList.toString());
+			requestResponse.setMessage("Data idInstitusi "+idInstitusi.toString()+" is deleted");
 		} catch (Exception e) {
 			requestResponse.setStatus("Failed");
 			requestResponse.setMessage("Error Delete Institusi, ErrMsg: "+e);
@@ -74,29 +74,32 @@ public class SetupServiceImpl implements SetupService{
 	
 	public RequestResponse addDBServiceSetting(DBServiceSetting dbServiceSetting){
 		RequestResponse requestResponse = new RequestResponse();
+		List<DBServiceSetting> dbServiceSettings = new ArrayList<DBServiceSetting>();
+		dbServiceSettings = dbServiceSettingRepository.findByIdInstitusi(dbServiceSetting.getIdInstitusi());
 		
-		try {
+		if(dbServiceSettings == null){
 			dbServiceSettingRepository.save(dbServiceSetting);
 			requestResponse.setStatus("Success");
 			requestResponse.setMessage("Data Added "+dbServiceSetting.toString());
-		} catch (Exception e) {
-			requestResponse.setStatus("Failed");
-			requestResponse.setMessage("Error Add DBServiceSetting, ErrMsg: "+e);
+		} else {
+			dbServiceSettingRepository.save(dbServiceSetting);
+			requestResponse.setStatus("Success");
+			requestResponse.setMessage("Data is Updated "+dbServiceSetting.toString());
 		}
 		
 		return requestResponse;
 	}
 	
-	public RequestResponse deleteDBServiceSetting(DBServiceSetting dbServiceSetting){
+	public RequestResponse deleteDBServiceSetting(Integer idService){
 		RequestResponse requestResponse = new RequestResponse();
 	
 		try {
-			dbServiceSettingRepository.delete(dbServiceSetting);
+			dbServiceSettingRepository.delete(idService);
 			requestResponse.setStatus("Success");
-			requestResponse.setMessage("Data Added "+dbServiceSetting.toString());
+			requestResponse.setMessage("Data idService "+idService+" is deleted");
 		} catch (Exception e) {
 			requestResponse.setStatus("Failed");
-			requestResponse.setMessage("Error Delete DBServiceSetting"+dbServiceSetting.toString());
+			requestResponse.setMessage("Error Delete DBServiceSetting, ErrMsg: "+e);
 		}
 		
 		return requestResponse;

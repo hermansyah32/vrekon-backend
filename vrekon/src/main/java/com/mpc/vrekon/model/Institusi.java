@@ -52,4 +52,11 @@ public class Institusi {
 	public void setLocalTime(String localTime) {
 		this.localTime = localTime;
 	}
+	
+	@Override
+	public String toString() {
+		return "Institusi [id=" + id + ", idInstitusi=" + idInstitusi
+				+ ", name=" + name + ", acquirer=" + acquirer + ", localDate="
+				+ localDate + ", localTime=" + localTime + "]";
+	}
 }

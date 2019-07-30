@@ -12,9 +12,9 @@ public interface SetupService {
 	
 	RequestResponse addInstitusi(InstitusiList institusiList);
 	
-	RequestResponse deleteInstitusi(InstitusiList institusiList);
+	RequestResponse deleteInstitusi(Integer idInstitusi);
 	
 	RequestResponse addDBServiceSetting(DBServiceSetting dbServiceSetting);
 	
-	RequestResponse deleteDBServiceSetting(DBServiceSetting dbServiceSetting);
+	RequestResponse deleteDBServiceSetting(Integer idService);
  }

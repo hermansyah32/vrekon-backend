@@ -72,13 +72,13 @@ public class SetupController {
 		return requestResponse;
 	}
 	
-	@RequestMapping(value="/institusi-delete-submit", method=RequestMethod.POST)
+	@RequestMapping(value="/institusi-hapus-submit", method=RequestMethod.POST)
 	@ResponseBody
 	public RequestResponse deleteInstitusi(@RequestBody InstitusiList institusiList){
 		log.debug("Routing to /institusi-delete-submit param: "+institusiList);
 		RequestResponse requestResponse = new RequestResponse();
 		
-		requestResponse = setupService.deleteInstitusi(institusiList);
+		requestResponse = setupService.deleteInstitusi(institusiList.getIdInstitusi());
 		log.debug("Response from Routing /institusi-delete-submit: "+requestResponse);
 		
 		return requestResponse;
@@ -115,7 +115,7 @@ public class SetupController {
 		log.debug("Routing to /db-service-hapus-submit param: "+dbServiceSetting);
 		RequestResponse requestResponse = new RequestResponse();
 		
-		requestResponse = setupService.deleteDBServiceSetting(dbServiceSetting);
+		requestResponse = setupService.deleteDBServiceSetting(dbServiceSetting.getIdService());
 		log.debug("Response from Routing /db-service-hapus-submit: "+requestResponse);
 		
 		return requestResponse;

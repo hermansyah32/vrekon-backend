@@ -19,45 +19,16 @@ import com.mpc.vrekon.service.RekonService;
 
 @Controller
 public class RekonController {
-	@Autowired RekonService rekonService;
-	
+	@Autowired RekonService rekonService;	
 	Logger log = Logger.getLogger(getClass());
-	
-	@RequestMapping(value="/compare-key-list", method=RequestMethod.POST)
-	@ResponseBody
-	public List<RekonCompareKey> listCompareKey(){
-		List<RekonCompareKey> rekonCompareKeyList = new ArrayList<RekonCompareKey>();
-		rekonCompareKeyList = rekonService.listRekonCompareKey();
-		log.debug("Routing to /compare-key-list data: "+rekonCompareKeyList.toString());
-		
-		return rekonCompareKeyList;
-	}
-	
-	@RequestMapping(value="/compare-key-tambah", method=RequestMethod.POST)
-	@ResponseBody
-	public RequestResponse addCompareKey(@RequestBody RekonCompareKey rekonCompareKey){
-		log.debug("Routing to /compare-key-tambah param: "+rekonCompareKey);
-		RequestResponse requestResponse = new RequestResponse();
-		requestResponse = rekonService.addRekonCompareKey(rekonCompareKey);
-		
-		return requestResponse;
-	}
-	
-	@RequestMapping(value="/compare-key-hapus", method=RequestMethod.POST)
-	@ResponseBody
-	public RequestResponse deleteCompareKey(@RequestBody RekonCompareKey rekonCompareKey){
-		log.debug("Routing to /compare-key-hapus param: "+rekonCompareKey);
-		RequestResponse requestResponse = new RequestResponse();
-		requestResponse = rekonService.deleteRekonCompareKey(rekonCompareKey);
-		
-		return requestResponse;
-	}
 	
 	@RequestMapping(value="/compare-data-submit", method=RequestMethod.POST)
 	@ResponseBody
 	public List<RekonCompareResponse> compareData(@RequestBody RekonCompareRequest rekonCompareRequest){
 		log.debug("Routing to /compare-data-submit param: "+rekonCompareRequest);
+		List<RekonCompareResponse> rekonCompareResponses = new ArrayList<RekonCompareResponse>();
 		
-		return rekonService.compareData(rekonCompareRequest);
+		rekonCompareResponses = rekonService.compareData(rekonCompareRequest);
+		return rekonCompareResponses;
 	}
 }
