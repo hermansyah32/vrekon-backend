@@ -11,7 +11,6 @@ public class Institusi {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 	private Integer idInstitusi;
-	private String name;
 	private String acquirer;
 	private String localDate;
 	private String localTime;
@@ -27,12 +26,6 @@ public class Institusi {
 	}
 	public void setIdInstitusi(Integer idInstitusi) {
 		this.idInstitusi = idInstitusi;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
 	}
 	public String getAcquirer() {
 		return acquirer;
@@ -56,7 +49,7 @@ public class Institusi {
 	@Override
 	public String toString() {
 		return "Institusi [id=" + id + ", idInstitusi=" + idInstitusi
-				+ ", name=" + name + ", acquirer=" + acquirer + ", localDate="
+				+ ", acquirer=" + acquirer + ", localDate="
 				+ localDate + ", localTime=" + localTime + "]";
 	}
 }

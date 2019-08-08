@@ -1,20 +1,25 @@
 package com.mpc.vrekon.service;
 
 import java.util.List;
+import java.util.Map;
 
-import com.mpc.vrekon.model.DBServiceSetting;
-import com.mpc.vrekon.model.RequestResponse;
+import com.mpc.vrekon.model.DBCopyStartRequest;
+import com.mpc.vrekon.model.DBRequest;
+import com.mpc.vrekon.model.DBSetting;
 import com.mpc.vrekon.model.InstitusiList;
-import com.mpc.vrekon.model.SetupServiceResponse;
 
 public interface SetupService {
-	List<SetupServiceResponse> getSetupServiceResponse();
+	Map<String, List<?>> getSetup();
 	
-	RequestResponse addInstitusi(InstitusiList institusiList);
+	Map<String, List<?>> addInstitusi(InstitusiList institusiList, String submitType);
 	
-	RequestResponse deleteInstitusi(Integer idInstitusi);
+	Map<String, List<?>> deleteInstitusi(Integer idInstitusi);
 	
-	RequestResponse addDBServiceSetting(DBServiceSetting dbServiceSetting);
+	Map<String, List<?>> getDBSetting(DBSetting dbSetting);
 	
-	RequestResponse deleteDBServiceSetting(Integer idService);
+	Map<String, List<?>> addDBSetting(DBRequest dbRequest, String submitType);
+	
+	Map<String, List<?>> deleteDBSetting(DBSetting dbSetting);
+	
+	Map<String, List<?>> dbCopyStart(DBCopyStartRequest dbCopyStartRequest);
  }

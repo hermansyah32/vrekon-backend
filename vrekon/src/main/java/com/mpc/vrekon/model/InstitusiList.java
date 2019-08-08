@@ -9,14 +9,22 @@ import javax.persistence.Id;
 public class InstitusiList {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer idInstitusi;
+	private Integer id = 1;
+	private Integer institusiTabel;
 	private String name;
 	
-	public Integer getIdInstitusi() {
-		return idInstitusi;
+	public Integer getId() {
+		return id;
 	}
-	public void setIdInstitusi(Integer idInstitusi) {
-		this.idInstitusi = idInstitusi;
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
+	public Integer getInstitusiTabel() {
+		return institusiTabel;
+	}
+	public void setInstitusiTabel(Integer institusiTabel) {
+		this.institusiTabel = institusiTabel;
 	}
 	public String getName() {
 		return name;
@@ -27,7 +35,7 @@ public class InstitusiList {
 	
 	@Override
 	public String toString() {
-		return "InstitusiList [idInstitusi=" + idInstitusi + ", name=" + name
-				+ "]";
+		return "InstitusiList [id=" + id + ", institusiTabel=" + institusiTabel
+				+ ", name=" + name + "]";
 	}
 }

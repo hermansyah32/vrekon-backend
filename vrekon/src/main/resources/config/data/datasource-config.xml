@@ -7,6 +7,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
+	<!-- DEFAULT DATABASE -->
 	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
 		<property name="driverClassName" value="${database.driverClassName}" />
 		<property name="url" value="${database.url}" />
@@ -24,15 +25,35 @@
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 	
-	<tx:annotation-driven mode="aspectj" transaction-manager="transactionManager" />
-	
 	<bean id="entityManagerFactory"  class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" >
-		<!-- --><property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
-		<property name="persistenceUnitName" value="persistenceUnit" /> 
+		<property name="persistenceUnitName" value="persistenceUnit" />
 		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="com.mpc" />
+		<property name="jpaProperties">
+	        <props>
+	        	<!--
+	            
+	            <prop key="hibernate.dialect">org.hibernate.dialect.OracleDialect</prop>
+	        		
+	        	-->
+	            <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+	            <!-- value="create" to build a new database on each run; value="update" to modify an existing database; value="create-drop" means the same as "create" but also drops tables when Hibernate closes; value="validate" makes no changes to the database -->
+	            <prop key="hibernate.hbm2ddl.auto">update</prop> 
+	            <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+	            <prop key="hibernate.connection.charSet">UTF-8</prop>
+	            <!-- metadata false for oracle -->
+	            <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+	            <!-- Uncomment the following two properties for JBoss only -->
+	            <!-- property name="hibernate.validator.apply_to_ddl" value="false" /-->
+	            <!-- property name="hibernate.validator.autoregister_listeners" value="false" /-->
+	        </props>
+	    </property>
+	    <property name="jpaVendorAdapter">
+	        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+	    </property>
 	</bean> 
 	
-	<jpa:repositories base-package="com.mpc" 
-		entity-manager-factory-ref="entityManagerFactory" 
-		transaction-manager-ref="transactionManager" />
+	<jpa:repositories base-package="com.mpc.vrekon.repository" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager" />
+		
+	<tx:annotation-driven mode="aspectj" transaction-manager="transactionManager" />
 </beans>

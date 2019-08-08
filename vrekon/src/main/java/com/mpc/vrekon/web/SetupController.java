@@ -1,6 +1,7 @@
 package com.mpc.vrekon.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,114 +11,98 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.mpc.vrekon.model.DBServiceSetting;
-import com.mpc.vrekon.model.RequestResponse;
+import com.mpc.vrekon.model.DBCopyStartRequest;
+import com.mpc.vrekon.model.DBRequest;
+import com.mpc.vrekon.model.DBSetting;
 import com.mpc.vrekon.model.InstitusiList;
-import com.mpc.vrekon.model.SetupServiceResponse;
 import com.mpc.vrekon.service.SetupService;
+import com.mpc.vrekon.util.GlobalHelper;
 
 @Controller
 public class SetupController {
 	@Autowired SetupService setupService;
+	
 	Logger log = Logger.getLogger(getClass());
+
 	
 	@RequestMapping(value="/setup-service", method=RequestMethod.POST)
 	@ResponseBody
-	public List<SetupServiceResponse> getSetupServiceRespon(){
-		log.debug("Routing to /setup-service "+getClass());
-		return setupService.getSetupServiceResponse();
+	public Map<String, List<?>> getSetupServiceRespon(){
+		log.debug("Routing to /setup-service "+getClass());		
+		
+		return setupService.getSetup();
 	}
 	
-	//institusi setup
-	@RequestMapping(value="/institusi-tambah-default", method=RequestMethod.POST)
+	@RequestMapping(value="/institusi-tambah", method=RequestMethod.POST)
 	@ResponseBody
-	public void addInstitusi(){
-		log.debug("Routing to /institusi-tambah-default");
-		RequestResponse requestResponse = new RequestResponse();
-		InstitusiList institusiList = new InstitusiList();
-		institusiList.setIdInstitusi(1);
-		institusiList.setName("IST");
-		requestResponse = setupService.addInstitusi(institusiList);
+	public Map<String, List<?>> addInstitusi(@RequestBody InstitusiList institusiList){
+		log.debug("Routing to /institusi-tambah param: "+institusiList);
 		
-		institusiList.setIdInstitusi(2);
-		institusiList.setName("CMS");
-		requestResponse = setupService.addInstitusi(institusiList);
-		
-		institusiList.setIdInstitusi(3);
-		institusiList.setName("CORE");
-		requestResponse = setupService.addInstitusi(institusiList);
+		return setupService.addInstitusi(institusiList,"add");
 	}
 	
-	@RequestMapping(value="/institusi-tambah-submit", method=RequestMethod.POST)
+	@RequestMapping(value="/institusi-ubah", method=RequestMethod.POST)
 	@ResponseBody
-	public RequestResponse addInstitusi(@RequestBody InstitusiList institusiList){
-		log.debug("Routing to /institusi-tambah-submit param: "+institusiList);
-		RequestResponse requestResponse = new RequestResponse();
+	public Map<String, List<?>> editInstitusi(@RequestBody InstitusiList institusiList){
+		log.debug("Routing to /institusi-ubah param: "+institusiList);
 		
-		requestResponse = setupService.addInstitusi(institusiList);
-		log.debug("Response from Routing /institusi-tambah-submit: "+requestResponse);
-		
-		return requestResponse;
+		return setupService.addInstitusi(institusiList,"edit");
 	}
 	
-	@RequestMapping(value="/institusi-ubah-submit", method=RequestMethod.POST)
+	@RequestMapping(value="/institusi-hapus", method=RequestMethod.POST)
 	@ResponseBody
-	public RequestResponse editInstitusi(@RequestBody InstitusiList institusiList){
-		log.debug("Routing to /institusi-ubah-submit param: "+institusiList);
-		RequestResponse requestResponse = new RequestResponse();
+	public Map<String, List<?>> deleteInstitusi(@RequestBody InstitusiList institusiList){
+		log.debug("Routing to /institusi-hapus param: "+institusiList);
 		
-		requestResponse = setupService.addInstitusi(institusiList);
-		log.debug("Response from Routing /institusi-ubah-submit: "+requestResponse);
-		
-		return requestResponse;
-	}
-	
-	@RequestMapping(value="/institusi-hapus-submit", method=RequestMethod.POST)
-	@ResponseBody
-	public RequestResponse deleteInstitusi(@RequestBody InstitusiList institusiList){
-		log.debug("Routing to /institusi-delete-submit param: "+institusiList);
-		RequestResponse requestResponse = new RequestResponse();
-		
-		requestResponse = setupService.deleteInstitusi(institusiList.getIdInstitusi());
-		log.debug("Response from Routing /institusi-delete-submit: "+requestResponse);
-		
-		return requestResponse;
+		return setupService.deleteInstitusi(institusiList.getId());
 	}
 	
 	//db-setting-service
-	@RequestMapping(value="/db-service-tambah-submit", method=RequestMethod.POST)
+	@RequestMapping(value="/db-service", method=RequestMethod.POST)
 	@ResponseBody
-	public RequestResponse addDBService(@RequestBody DBServiceSetting dbServiceSetting){
-		log.debug("Routing to /db-service-tambah-submit param: "+dbServiceSetting);
-		RequestResponse requestResponse = new RequestResponse();
+	public Map<String, List<?>> getDBSetting(@RequestBody DBSetting dbSetting){
+		log.debug("Routing to /db-service param: "+dbSetting);
 		
-		requestResponse = setupService.addDBServiceSetting(dbServiceSetting);
-		log.debug("Response from Routing /db-service-tambah-submit: "+requestResponse);
-		
-		return requestResponse;
+		return setupService.getDBSetting(dbSetting);	
 	}
 	
-	@RequestMapping(value="/db-service-ubah-submit", method=RequestMethod.POST)
+	@RequestMapping(value="/db-service-tambah", method=RequestMethod.POST)
 	@ResponseBody
-	public RequestResponse editDBService(@RequestBody DBServiceSetting dbServiceSetting){
-		log.debug("Routing to /db-service-ubah-submit param: "+dbServiceSetting);
-		RequestResponse requestResponse = new RequestResponse();
+	public Map<String, List<?>> addDBSetting(@RequestBody DBRequest dbRequest){
+		log.debug("Routing to /db-service-tambah param: "+dbRequest);
 		
-		requestResponse = setupService.addDBServiceSetting(dbServiceSetting);
-		log.debug("Response from Routing /db-service-ubah-submit: "+requestResponse);
-		
-		return requestResponse;
+		return setupService.addDBSetting(dbRequest,"add");	
 	}
 	
-	@RequestMapping(value="/db-service-hapus-submit", method=RequestMethod.POST)
+	@RequestMapping(value="/db-service-ubah", method=RequestMethod.POST)
 	@ResponseBody
-	public RequestResponse deleteDBService(@RequestBody DBServiceSetting dbServiceSetting){
-		log.debug("Routing to /db-service-hapus-submit param: "+dbServiceSetting);
-		RequestResponse requestResponse = new RequestResponse();
+	public Map<String, List<?>> editDBSetting(@RequestBody DBRequest dbRequest){
+		log.debug("Routing to /db-service-ubah param: "+dbRequest);
 		
-		requestResponse = setupService.deleteDBServiceSetting(dbServiceSetting.getIdService());
-		log.debug("Response from Routing /db-service-hapus-submit: "+requestResponse);
+		return setupService.addDBSetting(dbRequest,"edit");
+	}
+	
+	@RequestMapping(value="/db-service-hapus", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, List<?>> deleteDBsetting(@RequestBody DBSetting dbSetting){
+		log.debug("Routing to /db-service-hapus param: "+dbSetting);
 		
-		return requestResponse;
+		return setupService.deleteDBSetting(dbSetting);
+	}
+	
+	@RequestMapping(value="/db-copy-start", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, List<?>> copyDB(@RequestBody DBCopyStartRequest dbCopyStartRequest){
+		log.debug("Routing to /db-copy-startparam: "+dbCopyStartRequest);
+		
+		return setupService.dbCopyStart(dbCopyStartRequest);
+	}
+	
+	@RequestMapping(value="/helper", method=RequestMethod.POST)
+	@ResponseBody
+	public void helper(){
+		String str = "acquirer_testing_variable";
+		str = GlobalHelper.StrConvertToVar(str);
+		log.debug(str);
 	}
 }

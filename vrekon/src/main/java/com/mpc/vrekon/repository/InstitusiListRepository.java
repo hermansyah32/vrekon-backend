@@ -7,6 +7,11 @@ import com.mpc.vrekon.model.InstitusiList;
 
 @Repository
 public interface InstitusiListRepository extends JpaRepository<InstitusiList, Integer>{
-
-	public InstitusiList findByIdInstitusi(Integer idInstitusi);
+	InstitusiList findByInstitusiTabel(Integer institusiTabel);
+	
+	Integer countByInstitusiTabelAndIdNot(Integer institusiTabel, Integer idInstitusi);
+	
+	Integer countByInstitusiTabel(Integer institusiTabel); 
+	
+	Integer countByInstitusiTabelNot(Integer institusiTabel);
 }

@@ -6,24 +6,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class DBServiceSetting {
+public class DBSetting {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer idService;
+	private Integer id;
 	private Integer idInstitusi;
 	private String dbType;
 	private String dbHost;
 	private String dbName;
 	private String dbUsername;
 	private String dbPassword;
-	private String status;
-	
+	private String dbTableName;
+	private String status;	
 
-	public Integer getIdService() {
-		return idService;
+	public Integer getId() {
+		return id;
 	}
-	public void setIdService(Integer idService) {
-		this.idService = idService;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	public Integer getIdInstitusi() {
 		return idInstitusi;
@@ -61,19 +61,25 @@ public class DBServiceSetting {
 	public void setDbPassword(String dbPassword) {
 		this.dbPassword = dbPassword;
 	}
+	public String getDbTableName() {
+		return dbTableName;
+	}
+	public void setDbTableName(String dbTableName) {
+		this.dbTableName = dbTableName;
+	}
 	public String getStatus() {
 		return status;
 	}
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	
 	@Override
 	public String toString() {
-		return "DBServiceSetting [idService=" + idService + ", idInstitusi="
-				+ idInstitusi + ", dbType=" + dbType + ", dbHost=" + dbHost
-				+ ", dbName=" + dbName + ", dbUsername=" + dbUsername
-				+ ", dbPassword=" + dbPassword + ", status=" + status + "]";
+		return "DBSetting [id=" + id + ", idInstitusi=" + idInstitusi
+				+ ", dbType=" + dbType + ", dbHost=" + dbHost + ", dbName="
+				+ dbName + ", dbUsername=" + dbUsername + ", dbPassword="
+				+ dbPassword + ", dbTableName=" + dbTableName + ", status="
+				+ status + "]";
 	}
-	
-	
 }

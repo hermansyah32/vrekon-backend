@@ -1,6 +1,6 @@
 package com.mpc.vrekon.model;
 
-public class RequestResponse {
+public class ResponseMessage {
 	private String Status;
 	private String Message;
 	
@@ -16,9 +16,10 @@ public class RequestResponse {
 	public void setMessage(String message) {
 		Message = message;
 	}
+	
 	@Override
 	public String toString() {
-		return "ErrorResponse [Status=" + Status + ", Message=" + Message + "]";
+		return "ResponseMessage [Status=" + Status + ", Message=" + Message
+				+ "]";
 	}
-	
 }

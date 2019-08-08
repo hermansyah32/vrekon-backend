@@ -32,7 +32,8 @@ public class RekonServiceImpl implements RekonService{
 	@Autowired Institusi4Repository institusi4Repository;
 	@Autowired Institusi5Repository institusi5Repository;
 	@Autowired Institusi6Repository institusi6Repository;
-	@PersistenceContext	EntityManager entityManager;
+	
+	@PersistenceContext(unitName="persistenceUnit") EntityManager entityManager;
 	Logger log = Logger.getLogger(getClass());
 	
 	private String getCompareKey(RekonCompareRequest rekonCompareRequest){
