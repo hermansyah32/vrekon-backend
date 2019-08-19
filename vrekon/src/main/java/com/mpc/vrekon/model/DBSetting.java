@@ -18,6 +18,7 @@ public class DBSetting {
 	private String dbPassword;
 	private String dbTableName;
 	private String status;	
+	private String files;
 
 	public Integer getId() {
 		return id;
@@ -72,6 +73,12 @@ public class DBSetting {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}	
+	public String getFiles() {
+		return files;
+	}
+	public void setFiles(String files) {
+		this.files = files;
 	}
 	
 	@Override
@@ -80,6 +87,6 @@ public class DBSetting {
 				+ ", dbType=" + dbType + ", dbHost=" + dbHost + ", dbName="
 				+ dbName + ", dbUsername=" + dbUsername + ", dbPassword="
 				+ dbPassword + ", dbTableName=" + dbTableName + ", status="
-				+ status + "]";
+				+ status + ", files=" + files + "]";
 	}
 }

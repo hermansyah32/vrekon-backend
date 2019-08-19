@@ -41,6 +41,22 @@ public class ConnectionHelper {
 		return connection;
 	}
 	
+	public Connection SetSpesificConnnection(){
+		Connection connection = null;
+		try {
+			Class.forName(dbSetting.getDbType());
+			connection = (Connection) DriverManager.getConnection(
+								dbSetting.getDbHost(),
+								dbSetting.getDbUsername(),
+								dbSetting.getDbPassword()
+							  );
+		} catch (Exception e) {
+			log.debug("Error setConnection: "+e);
+		}
+		
+		return connection;
+	}
+	
 	public ResultSet executeQuery(Connection connection,String sql){
 		ResultSet resultSet = null;
 		try {
@@ -51,6 +67,18 @@ public class ConnectionHelper {
 		}
 		
 		return resultSet;
+	}
+	
+	public Integer executeUpdate(Connection connection,String sql){
+		Integer status = null;
+		try {
+			Statement statement = (Statement) connection.createStatement();
+			status = statement.executeUpdate(sql);
+		} catch (Exception e) {
+			 log.debug("Error executeQuery: "+e);
+		}
+		
+		return status;
 	}
 	
 	public String setSelectedField(List<DBTranslate> dbTranslates){

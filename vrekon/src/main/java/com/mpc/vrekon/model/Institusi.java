@@ -10,7 +10,7 @@ public class Institusi {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
-	private Integer idInstitusi;
+	private Integer idService;
 	private String acquirer;
 	private String localDate;
 	private String localTime;
@@ -21,11 +21,11 @@ public class Institusi {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Integer getIdInstitusi() {
-		return idInstitusi;
+	public Integer getIdService() {
+		return idService;
 	}
-	public void setIdInstitusi(Integer idInstitusi) {
-		this.idInstitusi = idInstitusi;
+	public void setIdService(Integer idService) {
+		this.idService = idService;
 	}
 	public String getAcquirer() {
 		return acquirer;
@@ -48,8 +48,8 @@ public class Institusi {
 	
 	@Override
 	public String toString() {
-		return "Institusi [id=" + id + ", idInstitusi=" + idInstitusi
-				+ ", acquirer=" + acquirer + ", localDate="
-				+ localDate + ", localTime=" + localTime + "]";
+		return "Institusi [id=" + id + ", idService=" + idService
+				+ ", acquirer=" + acquirer + ", localDate=" + localDate
+				+ ", localTime=" + localTime + "]";
 	}
 }

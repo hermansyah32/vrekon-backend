@@ -4,7 +4,9 @@ import java.util.List;
 
 public class RekonCompareRequest {
 	private Integer idInstitusiFrom;
+	private Integer idServiceFrom;
 	private Integer idInstitusiTo;
+	private Integer idServiceTo;
 	private List<RekonCompareKey> rekonCompareKey;
 	
 	public Integer getIdInstitusiFrom() {
@@ -24,12 +26,25 @@ public class RekonCompareRequest {
 	}
 	public void setRekonCompareKey(List<RekonCompareKey> rekonCompareKey) {
 		this.rekonCompareKey = rekonCompareKey;
+	}	
+	public Integer getIdServiceFrom() {
+		return idServiceFrom;
+	}
+	public void setIdServiceFrom(Integer idServiceFrom) {
+		this.idServiceFrom = idServiceFrom;
+	}
+	public Integer getIdServiceTo() {
+		return idServiceTo;
+	}
+	public void setIdServiceTo(Integer idServiceTo) {
+		this.idServiceTo = idServiceTo;
 	}
 	
 	@Override
 	public String toString() {
-		return "SetupRekonRespon [idInstitusiFrom=" + idInstitusiFrom
-				+ ", idInstitusiTo=" + idInstitusiTo + ", rekonCompareKey="
-				+ rekonCompareKey + "]";
+		return "RekonCompareRequest [idInstitusiFrom=" + idInstitusiFrom
+				+ ", idServiceFrom=" + idServiceFrom + ", idInstitusiTo="
+				+ idInstitusiTo + ", idServiceTo=" + idServiceTo
+				+ ", rekonCompareKey=" + rekonCompareKey + "]";
 	}
 }

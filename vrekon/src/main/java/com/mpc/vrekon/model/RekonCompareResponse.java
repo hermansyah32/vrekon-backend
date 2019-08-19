@@ -2,14 +2,12 @@ package com.mpc.vrekon.model;
 
 public class RekonCompareResponse {
 	private Integer id1;
-	private Integer idInstitusi1;
-	private String name1;
+	private Integer idService1;
 	private String acquirer1;
 	private String localDate1;
 	private String localTime1;
 	private Integer id2;
-	private Integer idInstitusi2;
-	private String name2;
+	private Integer idService2;
 	private String acquirer2;
 	private String localDate2;
 	private String localTime2;
@@ -21,17 +19,17 @@ public class RekonCompareResponse {
 	public void setId1(Integer id1) {
 		this.id1 = id1;
 	}
-	public Integer getIdInstitusi1() {
-		return idInstitusi1;
+	public Integer getIdService1() {
+		return idService1;
 	}
-	public void setIdInstitusi1(Integer idInstitusi1) {
-		this.idInstitusi1 = idInstitusi1;
+	public void setIdService1(Integer idService1) {
+		this.idService1 = idService1;
 	}
-	public String getName1() {
-		return name1;
+	public Integer getIdService2() {
+		return idService2;
 	}
-	public void setName1(String name1) {
-		this.name1 = name1;
+	public void setIdService2(Integer idService2) {
+		this.idService2 = idService2;
 	}
 	public String getAcquirer1() {
 		return acquirer1;
@@ -56,18 +54,6 @@ public class RekonCompareResponse {
 	}
 	public void setId2(Integer id2) {
 		this.id2 = id2;
-	}
-	public Integer getIdInstitusi2() {
-		return idInstitusi2;
-	}
-	public void setIdInstitusi2(Integer idInstitusi2) {
-		this.idInstitusi2 = idInstitusi2;
-	}
-	public String getName2() {
-		return name2;
-	}
-	public void setName2(String name2) {
-		this.name2 = name2;
 	}
 	public String getAcquirer2() {
 		return acquirer2;
@@ -96,12 +82,11 @@ public class RekonCompareResponse {
 	
 	@Override
 	public String toString() {
-		return "RekonCompareResponse [id1=" + id1 + ", idInstitusi1="
-				+ idInstitusi1 + ", name1=" + name1 + ", acquirer1="
-				+ acquirer1 + ", localDate1=" + localDate1 + ", localTime1="
-				+ localTime1 + ", id2=" + id2 + ", idInstitusi2="
-				+ idInstitusi2 + ", name2=" + name2 + ", acquirer2="
-				+ acquirer2 + ", localDate2=" + localDate2 + ", localTime2="
-				+ localTime2 + ", status=" + status + "]";
+		return "RekonCompareResponse [id1=" + id1 + ", idService1="
+				+ idService1 + ", acquirer1=" + acquirer1 + ", localDate1="
+				+ localDate1 + ", localTime1=" + localTime1 + ", id2=" + id2
+				+ ", idService2=" + idService2 + ", acquirer2=" + acquirer2
+				+ ", localDate2=" + localDate2 + ", localTime2=" + localTime2
+				+ ", status=" + status + "]";
 	}
 }

@@ -13,7 +13,7 @@
 
 	<!-- - POJOs labeled with the @Controller and @Service annotations are auto-detected. -->
 	<context:component-scan base-package="com.mpc.vrekon.web" />
-
+	
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
