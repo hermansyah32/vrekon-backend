@@ -9,12 +9,14 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.ResourceUtils;
 
 import com.mpc.vrekon.model.DBSetting;
 
 public class GlobalHelper {	
 	private Connection connection = null;
 	private ResultSet resultSet = null;
+	private String realPath = "classpath:config/data/database.properties";
 	private Logger log = Logger.getLogger(getClass());
 	
 	public static String StrConvertToVar(String str){
@@ -34,11 +36,11 @@ public class GlobalHelper {
         else return "";
     }
 	
-	@SuppressWarnings("deprecation")
-	public void updateQuery(String sql, HttpServletRequest request){
+	public void updateQuery(String sql){
 		try {
 			DBSetting dbSetting = new DBSetting();
-			FileInputStream input = new FileInputStream(request.getRealPath("../resources/config/data/database.properties"));
+			File file = ResourceUtils.getFile(realPath);
+			FileInputStream input = new FileInputStream(file);
 			
 			Properties prop = new Properties();
 			prop.load(input);
@@ -49,18 +51,18 @@ public class GlobalHelper {
 			dbSetting.setDbPassword(prop.getProperty("database.password"));
 			
 			ConnectionHelper connectionHelper = new ConnectionHelper(dbSetting);
-			connection = connectionHelper.SetSpesificConnnection();
-			connectionHelper.executeUpdate(connection, sql);
+			this.connection = connectionHelper.SetSpesificConnnection();
+			connectionHelper.executeUpdate(this.connection, sql);
 		} catch (Exception e) {
-			log.debug(e.getMessage());
+			log.error(e);
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
-	public ResultSet executeQuery(String sql, HttpServletRequest request){
+	public ResultSet executeQuery(String sql){
 		try {
 			DBSetting dbSetting = new DBSetting();
-			FileInputStream input = new FileInputStream(request.getRealPath("../resources/config/data/database.properties"));
+			File file = ResourceUtils.getFile(realPath);
+			FileInputStream input = new FileInputStream(file);
 			
 			Properties prop = new Properties();
 			prop.load(input);
@@ -71,8 +73,8 @@ public class GlobalHelper {
 			dbSetting.setDbPassword(prop.getProperty("database.password"));
 			
 			ConnectionHelper connectionHelper = new ConnectionHelper(dbSetting);
-			connection = connectionHelper.SetSpesificConnnection();
-			resultSet = connectionHelper.executeQuery(connection, sql);
+			this.connection = connectionHelper.SetSpesificConnnection();
+			resultSet = connectionHelper.executeQuery(this.connection, sql);
 		} catch (Exception e) {
 			log.debug(e.getMessage());
 		}
@@ -82,7 +84,7 @@ public class GlobalHelper {
 	
 	public void closeConnection(){
 		try {
-			connection.close();			
+			this.connection.close();			
 		} catch (Exception e) {
 			log.debug(e.getMessage());
 		}

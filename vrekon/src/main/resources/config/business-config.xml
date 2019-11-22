@@ -8,6 +8,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
 	<import resource="classpath:config/data/datasource-config.xml" />
+	<!-- <import resource="classpath:config/service/scheduler-config.xml" />  -->
 	
 	<context:component-scan base-package="com.mpc.vrekon" >
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>

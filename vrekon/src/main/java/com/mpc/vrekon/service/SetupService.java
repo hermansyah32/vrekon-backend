@@ -33,7 +33,7 @@ public interface SetupService {
 	
 	Map<String, List<?>> deleteDBSetting(HttpServletRequest request, DBSetting dbSetting);
 	
-	Map<String, List<?>> dbCopyStart(HttpServletRequest request, DBCopyStartRequest dbCopyStartRequest, HttpSession session);
+	Map<String, List<?>> dbCopyStart(HttpServletRequest request, DBCopyStartRequest dbCopyStartRequest, HttpSession session, Boolean scheduler);
 	
 	Map<String, List<?>> clearTmpService(HttpServletRequest request, DBSetting dbSetting);
  }

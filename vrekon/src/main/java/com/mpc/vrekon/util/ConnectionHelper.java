@@ -35,7 +35,7 @@ public class ConnectionHelper {
 								  );
 			}
 		} catch (Exception e) {
-			log.debug("Error setConnection: "+e);
+			e.printStackTrace();
 		}
 		
 		return connection;
@@ -51,7 +51,7 @@ public class ConnectionHelper {
 								dbSetting.getDbPassword()
 							  );
 		} catch (Exception e) {
-			log.debug("Error setConnection: "+e);
+			e.printStackTrace();
 		}
 		
 		return connection;
@@ -62,8 +62,26 @@ public class ConnectionHelper {
 		try {
 			Statement statement = (Statement) connection.createStatement();
 			resultSet = statement.executeQuery(sql);
+			
 		} catch (Exception e) {
-			 log.debug("Error executeQuery: "+e);
+			 e.printStackTrace();
+		}
+		
+		return resultSet;
+	}
+	
+	public ResultSet executeQuery(Connection connection, String sql, List<String> params) {
+		ResultSet resultSet = null;
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql);
+			Integer i = 1;
+			for (String param : params) {
+				statement.setObject(i, param);
+				i++;
+			}
+			statement.executeQuery();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return resultSet;
@@ -75,7 +93,24 @@ public class ConnectionHelper {
 			Statement statement = (Statement) connection.createStatement();
 			status = statement.executeUpdate(sql);
 		} catch (Exception e) {
-			 log.debug("Error executeQuery: "+e);
+			e.printStackTrace();
+		}
+		
+		return status;
+	}
+	
+	public Integer executeUpdate(Connection connection,String sql, List<String> params){
+		Integer status = null;
+		try {
+			PreparedStatement statement = connection.prepareStatement(sql);
+			Integer i = 1;
+			for (String param : params) {
+				statement.setObject(i, param);
+				i++;
+			}
+			statement.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return status;
@@ -91,7 +126,6 @@ public class ConnectionHelper {
 		}
 		translate += "-";
 		translate = translate.replace(", -", "");
-		log.debug(translate);
 		return translate;
 	}
 }

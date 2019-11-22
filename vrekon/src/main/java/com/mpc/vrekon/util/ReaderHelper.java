@@ -10,6 +10,7 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReaderHelper {	
@@ -24,7 +25,19 @@ public class ReaderHelper {
 		try {
 			this.file = file;
 			excelFile = new FileInputStream(new File(file));
-	        workbook = new XSSFWorkbook(excelFile);
+	        //workbook = new XSSFWorkbook(excelFile);
+			workbook = WorkbookFactory.create(excelFile);
+	        datatypeSheet = workbook.getSheetAt(0);
+		} catch (Exception e) {
+			log.debug("Error constructor: "+e);
+		}
+	}
+	
+	public ReaderHelper(File file) {
+		try {
+			excelFile = new FileInputStream(file);
+	        //workbook = new XSSFWorkbook(excelFile);
+			workbook = WorkbookFactory.create(excelFile);
 	        datatypeSheet = workbook.getSheetAt(0);
 		} catch (Exception e) {
 			log.debug("Error constructor: "+e);
@@ -40,7 +53,7 @@ public class ReaderHelper {
             	rowCount++;
             }
         } catch (Exception e) {
-        	log.debug("Error getRowCount: "+e);
+        	e.printStackTrace();
         }
 		
 		return rowCount;

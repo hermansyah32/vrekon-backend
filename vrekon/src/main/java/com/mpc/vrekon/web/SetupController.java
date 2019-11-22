@@ -1,17 +1,13 @@
 package com.mpc.vrekon.web;
 
-import java.net.URL;
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,13 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mpc.vrekon.model.DBCopyStartRequest;
-import com.mpc.vrekon.model.DBRequest;
 import com.mpc.vrekon.model.DBSetting;
 import com.mpc.vrekon.model.InstitusiList;
 import com.mpc.vrekon.service.SetupService;
-import com.mpc.vrekon.util.GlobalHelper;
+
+import io.swagger.annotations.Api;
 
 @Controller
 public class SetupController {
@@ -45,15 +40,15 @@ public class SetupController {
 	@RequestMapping(value="institusi-tambah", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, List<?>> addInstitusi(@RequestBody InstitusiList institusiList, HttpServletRequest request){
-		log.debug("Routing to /institusi-tambah param: "+institusiList);
+		log.debug(request.getRequestURL().toString());	
 		
 		return setupService.addInstitusi(request, institusiList);
 	}
 	
 	@RequestMapping(value="institusi-cari", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, List<?>> searchInstitusi(@RequestBody InstitusiList institusiList){
-		log.debug("Routing to /institusi-cari param: "+institusiList);
+	public Map<String, List<?>> searchInstitusi(@RequestBody InstitusiList institusiList, HttpServletRequest request){
+		log.debug(request.getRequestURL().toString()+" Param: "+institusiList);	
 		
 		return setupService.searchInstitusi(institusiList.getId());
 	}
@@ -61,7 +56,7 @@ public class SetupController {
 	@RequestMapping(value="institusi-ubah", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, List<?>> editInstitusi(@RequestBody InstitusiList institusiList, HttpServletRequest request){
-		log.debug("Routing to /institusi-ubah param: "+institusiList);
+		log.debug(request.getRequestURL().toString()+" Param: "+institusiList);	
 		
 		return setupService.editInstitusi(request, institusiList);
 	}
@@ -69,7 +64,7 @@ public class SetupController {
 	@RequestMapping(value="institusi-hapus", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, List<?>> deleteInstitusi(@RequestBody InstitusiList institusiList, HttpServletRequest request){
-		log.debug("Routing to /institusi-hapus param: "+institusiList);
+		log.debug(request.getRequestURL().toString()+" Param: "+institusiList);	
 		
 		return setupService.deleteInstitusi(request, institusiList.getId());
 	}
@@ -77,16 +72,16 @@ public class SetupController {
 	//db-setting-service
 	@RequestMapping(value="db-service-by-id", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, List<?>> getDBSettingById(@RequestBody DBSetting dbSetting){
-		log.debug("Routing to /db-service param: "+dbSetting);
+	public Map<String, List<?>> getDBSettingById(@RequestBody DBSetting dbSetting, HttpServletRequest request){
+		log.debug(request.getRequestURL().toString()+" Param: "+dbSetting);	
 		
 		return setupService.getDBSettingById(dbSetting);	
 	}
 	
 	@RequestMapping(value="db-service-by-id-institusi", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, List<?>> getDBSetting(@RequestBody InstitusiList institusiList){
-		log.debug("Routing to /db-service param: "+institusiList);
+	public Map<String, List<?>> getDBSetting(@RequestBody InstitusiList institusiList, HttpServletRequest request){
+		log.debug(request.getRequestURL().toString()+" Param: "+institusiList);	
 		
 		return setupService.getDBSettingByIdInstitusi(institusiList);	
 	}
@@ -94,7 +89,7 @@ public class SetupController {
 	@RequestMapping(value="db-service-tambah", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, List<?>> addDBSetting(@RequestParam(value="files", required=false) MultipartFile[] files, @RequestParam("json") String json, HttpServletRequest request, HttpSession httpSession){
-		log.debug("Routing to /db-service-tambah param: "+json);
+		log.debug(request.getRequestURL().toString()+" Param: "+json);	
 		log.debug(files);
 		return setupService.addDBSetting(request, json, files, httpSession);	
 	}
@@ -102,7 +97,7 @@ public class SetupController {
 	@RequestMapping(value="db-service-ubah", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, List<?>> editDBSetting(@RequestParam(value="files", required=false) MultipartFile[] files, @RequestParam("json") String json, HttpServletRequest request, HttpSession httpSession){
-		log.debug("Routing to /db-service-ubah param: "+json);
+		log.debug(request.getRequestURL().toString()+" Param: "+json);	
 		
 		return setupService.editDBSetting(request, json, files, httpSession);
 	}
@@ -110,7 +105,7 @@ public class SetupController {
 	@RequestMapping(value="db-service-hapus", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, List<?>> deleteDBsetting(@RequestBody DBSetting dbSetting, HttpServletRequest request){
-		log.debug("Routing to /db-service-hapus param: "+dbSetting);
+		log.debug(request.getRequestURL().toString()+" Param: "+dbSetting);	
 		
 		return setupService.deleteDBSetting(request, dbSetting);
 	}
@@ -118,16 +113,28 @@ public class SetupController {
 	@RequestMapping(value="db-copy-start", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, List<?>> copyDB(@RequestBody DBCopyStartRequest dbCopyStartRequest, HttpSession session, HttpServletRequest request){
-		log.debug("Routing to /db-copy-startparam: "+dbCopyStartRequest);
+		log.debug(request.getRequestURL().toString()+" Param: "+dbCopyStartRequest);	
 		
-		return setupService.dbCopyStart(request, dbCopyStartRequest, session);
+		return setupService.dbCopyStart(request, dbCopyStartRequest, session, false);
 	}
 	
 	@RequestMapping(value="db-clear-tmp-service", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, List<?>> clearTmpService(@RequestBody DBSetting dbSetting, HttpServletRequest request) {
-		log.debug("Routing to /db-clear-tmp-service: "+dbSetting);
+		log.debug(request.getRequestURL().toString()+" Param: "+dbSetting);	
 		
 		return setupService.clearTmpService(request, dbSetting);
+	}
+	
+	@RequestMapping(value="test", method=RequestMethod.GET)
+	@ResponseBody
+	public void test(){
+		
+	}
+	
+	@RequestMapping(value="test1", method=RequestMethod.GET)
+	@ResponseBody
+	public void test1(){
+		
 	}
 }

@@ -19,6 +19,7 @@ public class DBSetting {
 	private String dbTableName;
 	private String status;	
 	private String files;
+	private String filesDirectory;
 
 	public Integer getId() {
 		return id;
@@ -80,6 +81,12 @@ public class DBSetting {
 	public void setFiles(String files) {
 		this.files = files;
 	}
+	public String getFilesDirectory() {
+		return filesDirectory;
+	}
+	public void setFilesDirectory(String filesDirectory) {
+		this.filesDirectory = filesDirectory;
+	}
 	
 	@Override
 	public String toString() {
@@ -87,6 +94,7 @@ public class DBSetting {
 				+ ", dbType=" + dbType + ", dbHost=" + dbHost + ", dbName="
 				+ dbName + ", dbUsername=" + dbUsername + ", dbPassword="
 				+ dbPassword + ", dbTableName=" + dbTableName + ", status="
-				+ status + ", files=" + files + "]";
+				+ status + ", files=" + files + ", filesDirectory="
+				+ filesDirectory + "]";
 	}
 }

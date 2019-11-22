@@ -9,5 +9,9 @@ import com.mpc.vrekon.model.DBSetting;
 
 @Repository
 public interface DBSettingRepository extends JpaRepository<DBSetting, Integer>{
-	List<DBSetting> findByIdInstitusi(Integer idInstitusi);  
+	List<DBSetting> findByIdInstitusi(Integer idInstitusi); 
+	
+	List<DBSetting> findByDbType(String dbType);
+	
+	List<DBSetting> findByDbTypeOrDbType(String dbType, String orDbType);
 }

@@ -14,13 +14,16 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.record.PageBreakRecord.Break;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,10 +54,11 @@ import com.mpc.vrekon.util.ConnectionHelper;
 import com.mpc.vrekon.util.GlobalHelper;
 import com.mpc.vrekon.util.ReaderHelper;
 import com.mpc.vrekon.util.ResponseHelper;
+import com.mpc.vrekon.util.UtilHelper;
 
 @Service
 public class SetupServiceImpl implements SetupService{
-	
+	@Autowired ServletContext servletContext;
 	@Autowired DBSettingRepository dbSettingRepository;
 	@Autowired Institusi1Repository institusi1Repository;
 	@Autowired Institusi2Repository institusi2Repository;
@@ -68,6 +72,7 @@ public class SetupServiceImpl implements SetupService{
 	
 	ResponseHelper responseHelper = new ResponseHelper();
 	GlobalHelper globalHelper = new GlobalHelper();
+	UtilHelper utilHelper = new UtilHelper();
 	Logger log = Logger.getLogger(getClass());
 	
 	public Map<String, List<?>> getSetup(HttpServletRequest request){
@@ -83,7 +88,7 @@ public class SetupServiceImpl implements SetupService{
 				
 				for (DBSetting dbSetting : dbSettingRepository.findByIdInstitusi(value.getId())) {
 					String sql = "select count(*) as count from institusi"+value.getInstitusiTabel()+" where id_service="+dbSetting.getId();
-					ResultSet result = globalHelper.executeQuery(sql, request);
+					ResultSet result = globalHelper.executeQuery(sql);
 					result.next();
 					
 					//log.debug(result.getString("count"));
@@ -109,7 +114,7 @@ public class SetupServiceImpl implements SetupService{
 			responseHelper.putData(setupServiceList, "Success", "");
 		} catch (Exception e) {
 			responseHelper.putData(setupServiceList, "Failed",e.getMessage());
-			log.debug(e.getMessage());
+			e.printStackTrace();
 		}
 		
 		return responseHelper.getResponseData();
@@ -193,7 +198,7 @@ public class SetupServiceImpl implements SetupService{
 			if (!error) {
 				InstitusiList tmpInstitusiList = new InstitusiList();
 				String sql = "update institusi_list set institusi_tabel = "+institusiList.getInstitusiTabel()+", name = '"+institusiList.getName()+"' where id ="+institusiList.getId();
-				globalHelper.updateQuery(sql, request);
+				globalHelper.updateQuery(sql);
 				globalHelper.closeConnection();
 				
 				tmpInstitusiList = institusiListRepository.findOne(institusiList.getId());
@@ -219,16 +224,16 @@ public class SetupServiceImpl implements SetupService{
 				
 				for (DBSetting dbSetting : dbSettings) {
 					String sql = "delete from dbtranslate where id_service = "+dbSetting.getId();
-					globalHelper.updateQuery(sql, request);
+					globalHelper.updateQuery(sql);
 					globalHelper.closeConnection();
 				}
 				
 				String sql = "delete from dbsetting where id_institusi = "+idInstitusi;
-				globalHelper.updateQuery(sql, request);
+				globalHelper.updateQuery(sql);
 				globalHelper.closeConnection();
 				
 				sql = "delete from institusi_list where id = "+idInstitusi;
-				globalHelper.updateQuery(sql, request);
+				globalHelper.updateQuery(sql);
 				globalHelper.closeConnection();
 				
 				responseHelper.putData(new ArrayList<Object>(), "Success", "");				
@@ -340,8 +345,13 @@ public class SetupServiceImpl implements SetupService{
 						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");  
 						Date date = new Date();
 						String fileName = dbSetting.getId()+"_"+dateFormat.format(date)+"_"+i+"."+globalHelper.getFileExtension(file.getOriginalFilename());
-						File fileTransfer = new File(httpSession.getServletContext().getRealPath("/uploadFile/excel/"), fileName);
-						file.transferTo(fileTransfer);
+						if(globalHelper.getFileExtension(file.getOriginalFilename()).equals("xlsx") || globalHelper.getFileExtension(file.getOriginalFilename()).equals("xls")){
+							File fileTransfer = new File(httpSession.getServletContext().getRealPath("/uploadFile/excel/"), fileName);
+							file.transferTo(fileTransfer);
+						}else if(globalHelper.getFileExtension(file.getOriginalFilename()).equals("txt")){
+							File fileTransfer = new File(httpSession.getServletContext().getRealPath("/uploadFile/text/"), fileName);
+							file.transferTo(fileTransfer);
+						}
 						allFileName += fileName+"%";
 						i++;
 					}
@@ -352,7 +362,7 @@ public class SetupServiceImpl implements SetupService{
 				}
 				
 				String sql = "update dbsetting set files = '"+allFileName+"', status = 'Empty' where id = "+dbSetting.getId();
-				globalHelper.updateQuery(sql, request);
+				globalHelper.updateQuery(sql);
 				globalHelper.closeConnection();
 				
 				dbRequest.setDbSetting(dbSettingRepository.findOne(dbSetting.getId()));
@@ -391,11 +401,11 @@ public class SetupServiceImpl implements SetupService{
 						     +" db_password = '"+dbSetting.getDbPassword()+"', db_table_name = '"+dbSetting.getDbTableName()+"', "
 						     +" db_type = '"+dbSetting.getDbType()+"', db_username = '"+dbSetting.getDbUsername()+"' "
 						     +" where id = "+dbSetting.getId();
-				globalHelper.updateQuery(sql, request);
+				globalHelper.updateQuery(sql);
 				globalHelper.closeConnection();	
 				
 				sql = "delete from dbtranslate where id_service ="+dbSetting.getId();
-				globalHelper.updateQuery(sql, request);
+				globalHelper.updateQuery(sql);
 				globalHelper.closeConnection();
 				
 				log.debug("Start to save data");
@@ -415,8 +425,13 @@ public class SetupServiceImpl implements SetupService{
 						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");  
 						Date date = new Date();
 						String fileName = dbSetting.getId()+"_"+dateFormat.format(date)+"_"+i+"."+globalHelper.getFileExtension(file.getOriginalFilename());
-						File fileTransfer = new File(httpSession.getServletContext().getRealPath("/uploadFile/excel/"), fileName);
-						file.transferTo(fileTransfer);
+						if(globalHelper.getFileExtension(file.getOriginalFilename()).equals("xlsx") || globalHelper.getFileExtension(file.getOriginalFilename()).equals("xls")){
+							File fileTransfer = new File(httpSession.getServletContext().getRealPath("/uploadFile/excel/"), fileName);
+							file.transferTo(fileTransfer);
+						}else if(globalHelper.getFileExtension(file.getOriginalFilename()).equals("txt")){
+							File fileTransfer = new File(httpSession.getServletContext().getRealPath("/uploadFile/text/"), fileName);
+							file.transferTo(fileTransfer);
+						}
 						allFileName += fileName+"%";
 						i++;
 					}
@@ -427,12 +442,21 @@ public class SetupServiceImpl implements SetupService{
 					log.debug(tmpFileName.length);
 					
 					for (String file : tmpFileName) {
-						File fileDelete = new File(httpSession.getServletContext().getRealPath("/uploadFile/excel/"), file);
-						log.debug("Delete file: "+fileDelete);
-						fileDelete.delete();
+						if(globalHelper.getFileExtension(file).equals("xlsx") || globalHelper.getFileExtension(file).equals("xls")){
+							File fileDelete = new File(httpSession.getServletContext().getRealPath("/uploadFile/excel/"), file);
+							log.debug("Delete file: "+fileDelete);
+							fileDelete.delete();
+						}else if(globalHelper.getFileExtension(file).equals("txt")){
+							File fileDelete = new File(httpSession.getServletContext().getRealPath("/uploadFile/text/"), file);
+							log.debug("Delete file: "+fileDelete);
+							fileDelete.delete();
+						}
+						//File fileDelete = new File(httpSession.getServletContext().getRealPath("/uploadFile/excel/"), file);
+						//log.debug("Delete file: "+fileDelete);
+						//fileDelete.delete();
 					}
 					sql = "update dbsetting set files = '"+allFileName+"', status = 'Empty' where id = "+dbSetting.getId();
-					globalHelper.updateQuery(sql, request);
+					globalHelper.updateQuery(sql);
 					globalHelper.closeConnection();
 				}
 				dbRequest.setDbSetting(dbSettingRepository.findOne(dbSetting.getId()));
@@ -456,11 +480,11 @@ public class SetupServiceImpl implements SetupService{
 			}else{
 				dbSettingRepository.delete(dbSetting);
 				String sql = "delete from dbtranslate where id_service ="+dbSetting.getId();
-				globalHelper.updateQuery(sql, request);
+				globalHelper.updateQuery(sql);
 				globalHelper.closeConnection();
 				
 				sql = "DELETE FROM dbtranslate WHERE id_service = "+dbSetting.getId();
-				globalHelper.updateQuery(sql, request);
+				globalHelper.updateQuery(sql);
 				globalHelper.closeConnection();
 				
 				responseHelper.putData(new ArrayList<Object>(), "Success", "");
@@ -473,7 +497,7 @@ public class SetupServiceImpl implements SetupService{
 		return responseHelper.getResponseData();
 	}
 	
-	public Map<String, List<?>> dbCopyStart(HttpServletRequest request, DBCopyStartRequest dbCopyStartRequest, HttpSession session){
+	public Map<String, List<?>> dbCopyStart(HttpServletRequest request, DBCopyStartRequest dbCopyStartRequest, HttpSession session, Boolean scheduler){
 		try {
 			DBSetting dbSetting = dbSettingRepository.findOne(dbCopyStartRequest.getIdService());			
 			Boolean error = false;
@@ -496,10 +520,14 @@ public class SetupServiceImpl implements SetupService{
 					Connection connection = connectionHelper.SetConnnection();
 					List<DBTranslate> dbTranslates = new ArrayList<DBTranslate>();
 					
-					String select = "";
-					String sql = "SELECT COUNT(*) AS count FROM "+dbSetting.getDbTableName();
+					log.debug("DBType "+dbSetting.getDbType());
 					
 					dbTranslates = dbTranslateRepository.findByIdService(dbSetting.getId());
+					String select = "";
+					String sql = "SELECT COUNT(*) AS count FROM "+dbSetting.getDbTableName();
+					if (scheduler) {
+						sql += this.getWhereQuery(dbTranslates);
+					}
 					select = connectionHelper.setSelectedField(dbTranslates);
 					
 					ResultSet resultSet = connectionHelper.executeQuery(connection, sql);
@@ -509,127 +537,156 @@ public class SetupServiceImpl implements SetupService{
 					
 					dbTranslates = dbTranslateRepository.findByIdService(dbSetting.getId());
 					
-					sql = "delete from institusi"+institusiList.getInstitusiTabel()+" where id_service = "+dbSetting.getId();
-					globalHelper.updateQuery(sql, request);
-					globalHelper.closeConnection();
+					if(!scheduler){
+						sql = "delete from institusi"+institusiList.getInstitusiTabel()+" where id_service = "+dbSetting.getId();
+						globalHelper.updateQuery(sql);
+						globalHelper.closeConnection();						
+					}
+						
+					log.debug("Start to copy database");
 					
 					for (int i = 0; i < countExDatabase; i++) {
 						connection = connectionHelper.SetConnnection();
 						if (dbSetting.getDbType().equals("mysql")) {						
-							sql = "SELECT "+select+" FROM "+dbSetting.getDbTableName()+" LIMIT 1 OFFSET "+i;
+							if (scheduler) {
+								sql = "SELECT "+select+" FROM "+dbSetting.getDbTableName()+this.getWhereQuery(dbTranslates)+" LIMIT 1 OFFSET "+i;
+							}else{
+								sql = "SELECT "+select+" FROM "+dbSetting.getDbTableName()+" LIMIT 1 OFFSET "+i;								
+							}
 						} if (dbSetting.getDbType().equals("oracle")) {	
-							sql = "SELECT "+select+" FROM (SELECT ROWNUM RNUM, A.* FROM "+dbSetting.getDbTableName()+" A WHERE ROWNUM <= "+(i+1)+") WHERE RNUM >="+(i+1);
+							if (scheduler) {
+								sql = "SELECT "+select+" FROM (SELECT ROWNUM RNUM, A.* FROM "+dbSetting.getDbTableName()+" A WHERE ROWNUM <= "+(i+1)+") "+this.getWhereQuery(dbTranslates)+" AND RNUM >="+(i+1);
+							}else{
+								sql = "SELECT "+select+" FROM (SELECT ROWNUM RNUM, A.* FROM "+dbSetting.getDbTableName()+" A WHERE ROWNUM <= "+(i+1)+") WHERE RNUM >="+(i+1);								
+							}
 						}
 						
-						log.debug("SQL: "+sql);
+						log.debug("SQL Select: "+sql);
 						resultSet = connectionHelper.executeQuery(connection, sql);
 						resultSet.next();
 						
-						if (institusiList.getInstitusiTabel() == 1) {
-							Institusi1 institusi = new Institusi1();
-							for (DBTranslate dbTranslate : dbTranslates) {
-								BeanUtils.setProperty(
-										institusi, 
-										GlobalHelper.StrConvertToVar(dbTranslate.getTargetTableName()), 
-										resultSet.getString(dbTranslate.getTargetTableName())
-									);
-							}	
-							institusi.setIdService(dbSetting.getId());
-							institusi1Repository.save(institusi);
-							
-							log.debug(institusi);
-						} else if (institusiList.getInstitusiTabel() == 2) {
-							Institusi2 institusi = new Institusi2();
-							for (DBTranslate dbTranslate : dbTranslates) {
-								BeanUtils.setProperty(
-										institusi, 
-										GlobalHelper.StrConvertToVar(dbTranslate.getTargetTableName()), 
-										resultSet.getString(dbTranslate.getTargetTableName())
-									);
-							}						
-							institusi.setIdService(dbSetting.getId());
-							institusi2Repository.save(institusi);
-							
-							log.debug(institusi);
-						} else if (institusiList.getInstitusiTabel() == 3) {
-							Institusi3 institusi = new Institusi3();
-							for (DBTranslate dbTranslate : dbTranslates) {
-								BeanUtils.setProperty(
-										institusi, 
-										GlobalHelper.StrConvertToVar(dbTranslate.getTargetTableName()), 
-										resultSet.getString(dbTranslate.getTargetTableName())
-									);
-							}			
-							institusi.setIdService(dbSetting.getId());
-							institusi3Repository.save(institusi);
-							
-							log.debug(institusi);
-						} else if (institusiList.getInstitusiTabel() == 4) {
-							Institusi4 institusi = new Institusi4();
-							for (DBTranslate dbTranslate : dbTranslates) {
-								BeanUtils.setProperty(
-										institusi, 
-										GlobalHelper.StrConvertToVar(dbTranslate.getTargetTableName()), 
-										resultSet.getString(dbTranslate.getTargetTableName())
-									);
-							}			
-							institusi.setIdService(dbSetting.getId());
-							institusi4Repository.save(institusi);
-							
-							log.debug(institusi);
-						} else if (institusiList.getInstitusiTabel() == 5) {
-							Institusi5 institusi = new Institusi5();
-							for (DBTranslate dbTranslate : dbTranslates) {
-								BeanUtils.setProperty(
-										institusi, 
-										GlobalHelper.StrConvertToVar(dbTranslate.getTargetTableName()), 
-										resultSet.getString(dbTranslate.getTargetTableName())
-									);
-							}		
-							institusi.setIdService(dbSetting.getId());
-							institusi5Repository.save(institusi);
-							
-							log.debug(institusi);
-						} else if (institusiList.getInstitusiTabel() == 6) {
-							Institusi6 institusi = new Institusi6();
-							for (DBTranslate dbTranslate : dbTranslates) {
-								BeanUtils.setProperty(
-											institusi, 
-											GlobalHelper.StrConvertToVar(dbTranslate.getTargetTableName()), 
-											resultSet.getString(dbTranslate.getTargetTableName())
-										);
-							}
-							institusi.setIdService(dbSetting.getId());
-							institusi6Repository.save(institusi);
-							
-							log.debug(institusi);
+						String field = "";
+						String value = "";
+						
+						for (DBTranslate dbTranslate : dbTranslates) {
+							field += "`"+dbTranslate.getTargetTableName()+"`,";
+							value += "'"+resultSet.getString(dbTranslate.getTargetTableName())+"',";
 						}
+						field += "`id_service`";
+						value += "'"+dbSetting.getId()+"'";
+						
+						sql = "insert into institusi"+institusiList.getInstitusiTabel() +"("+field+") values("+value+")";
+						log.debug("SQL Insert: "+ sql);
+						globalHelper.updateQuery(sql);
+						globalHelper.closeConnection();
 						
 						connection.close();
 					}
 					
+					log.debug("Finish to copy database");
+					
+					log.debug("Update status to ready");
 					sql = "update dbsetting set status = 'Ready' where id = "+dbSetting.getId();
-					globalHelper.updateQuery(sql, request);
+					globalHelper.updateQuery(sql);
 					globalHelper.closeConnection();
+					
 				}else if(dbSetting.getDbType().equals("excel")){
 					List<DBTranslate> dbTranslates = new ArrayList<DBTranslate>();
 					dbTranslates = dbTranslateRepository.findByIdService(dbSetting.getId());
 					
-					Integer dataPosition = 4;					
-					String path = session.getServletContext().getRealPath("/uploadFile/excel");
+					log.debug("DBType "+dbSetting.getDbType());
+					
+					Integer dataPosition = 1;					
 					
 					String sql = "delete from institusi"+institusiList.getInstitusiTabel()+" where id_service = "+dbSetting.getId();
-					globalHelper.updateQuery(sql, request);
+					globalHelper.updateQuery(sql);
 					globalHelper.closeConnection();
 					
 					sql = "select * from dbsetting where id="+dbSetting.getId();
-					ResultSet result = globalHelper.executeQuery(sql, request);
+					ResultSet result = globalHelper.executeQuery(sql);
 					result.next();
 					
-					String[] files = result.getString("files").split("%");
+					log.debug(result.getString("files"));
+										
+					if(result.getString("files") != null){
+						String[] files = result.getString("files").split("%");
+						for (String fileString : files) {						
+							File fileExcel = new File(servletContext.getRealPath("/uploadFile/excel/"+fileString));
+							ReaderHelper readerHelper = new ReaderHelper(fileExcel);
+							Map<String, String> indexDataExcel = new HashMap<String, String>();
+							
+							for (DBTranslate dbTranslate : dbTranslates) {
+								if (dbTranslate.getOriginTableName().indexOf("[constan]") != -1) {
+									String originTableName = dbTranslate.getOriginTableName().replace("[constan]", "");
+									
+									indexDataExcel.put(dbTranslate.getTargetTableName(), originTableName);
+								}else{
+									String originTableName = dbTranslate.getOriginTableName();
+									Integer index = readerHelper.getCellPosition(originTableName, dataPosition);
+									indexDataExcel.put(dbTranslate.getTargetTableName(), ""+index);
+								}
+							}
+							
+							
+							log.debug(indexDataExcel);
+							log.debug("Count Row "+fileString+" => "+readerHelper.getRowCount());
+							countExDatabase += (readerHelper.getRowCount()-4);
+							
+							log.debug("Start to copy database");
+							
+							for (int i = (dataPosition+2); i < (readerHelper.getRowCount())-1; i++) {
+								String field = "";
+								String value = "";
+								
+								for(Map.Entry<String, String> excelValue : indexDataExcel.entrySet()){
+									String data = "";
+									if(excelValue.getValue().indexOf(",") != -1){
+										String[] indexPosition = excelValue.getValue().split(",");
+										Integer indexRow = Integer.parseInt(indexPosition[0]);
+										Integer indexColoum = Integer.parseInt(indexPosition[1]);
+										
+										data = readerHelper.getVelueUsingIndex(indexRow, indexColoum);
+										log.debug("Row: "+indexRow+" Coloum: "+indexColoum+ " Value: "+readerHelper.getVelueUsingIndex(indexRow, indexColoum));
+									}else{
+										data = readerHelper.getVelueUsingIndex(i, Integer.parseInt(excelValue.getValue()));
+									}
+									
+									field += "`"+excelValue.getKey()+"`,";
+									value += "'"+data+"',";
+								}
+								
+								field += "`id_service`";
+								value += "'"+dbSetting.getId()+"'";
+								
+								sql = "insert into institusi"+institusiList.getInstitusiTabel() +"("+field+") values("+value+")";
+								log.debug("SQL Insert: "+ sql);
+								globalHelper.updateQuery(sql);
+								globalHelper.closeConnection();								
+							}
+						}
+						
+						log.debug("Finish to copy database");
+						
+						log.debug("Update status to ready");
+						sql = "update dbsetting set status = 'Ready' where id = "+dbSetting.getId();
+						globalHelper.updateQuery(sql);
+						globalHelper.closeConnection();
+					}else{
+						responseHelper.putData(new ArrayList<Object>(), "Failed", "File "+countExDatabase+" not found.");
+					}
 					
-					for (String file : files) {
-						ReaderHelper readerHelper = new ReaderHelper(path+"/"+file);
+				}else if(dbSetting.getDbType().equals("excel_scheduller") && scheduler){
+					File folder = new File(servletContext.getRealPath(dbSetting.getFilesDirectory()));
+					File[] listOfFiles = folder.listFiles();
+					
+					List<DBTranslate> dbTranslates = new ArrayList<DBTranslate>();
+					dbTranslates = dbTranslateRepository.findByIdService(dbSetting.getId());
+					
+					log.debug("DBType "+dbSetting.getDbType());
+					Integer dataPosition = 1; 
+					for (int i = 0; i < listOfFiles.length; i++) {
+						File fileExcel = new File(servletContext.getRealPath(dbSetting.getFilesDirectory()+"/"+listOfFiles[i]));
+						ReaderHelper readerHelper = new ReaderHelper(fileExcel);
 						Map<String, String> indexDataExcel = new HashMap<String, String>();
 						
 						for (DBTranslate dbTranslate : dbTranslates) {
@@ -637,184 +694,64 @@ public class SetupServiceImpl implements SetupService{
 								String originTableName = dbTranslate.getOriginTableName().replace("[constan]", "");
 								
 								indexDataExcel.put(dbTranslate.getTargetTableName(), originTableName);
-								
 							}else{
 								String originTableName = dbTranslate.getOriginTableName();
 								Integer index = readerHelper.getCellPosition(originTableName, dataPosition);
 								indexDataExcel.put(dbTranslate.getTargetTableName(), ""+index);
 							}
 						}
-						
+										
 						log.debug(indexDataExcel);
-						log.debug(file+" => "+readerHelper.getRowCount());
-						countExDatabase += (readerHelper.getRowCount()-6);
+						log.debug("Count Row "+listOfFiles[i]+" => "+readerHelper.getRowCount());
+						countExDatabase += (readerHelper.getRowCount()-4);
 						
+						log.debug("Start to copy database");
 						
-						for (int i = (dataPosition+2); i < (readerHelper.getRowCount()-3); i++) {
-							if (institusiList.getInstitusiTabel() == 1) {
-								Institusi1 institusi = new Institusi1();
-								
-								for(Map.Entry<String, String> value : indexDataExcel.entrySet()){
-									String data = "";
-									if(value.getValue().indexOf(",") != -1){
-										String[] indexPosition = value.getValue().split(",");
-										Integer indexRow = Integer.parseInt(indexPosition[0]);
-										Integer indexColoum = Integer.parseInt(indexPosition[1]);
-										
-										data = readerHelper.getVelueUsingIndex(indexRow, indexColoum);
-										log.debug("Row: "+indexRow+" Coloum: "+indexColoum+ " Value: "+readerHelper.getVelueUsingIndex(indexRow, indexColoum));
-									}else{
-										data = readerHelper.getVelueUsingIndex(i, Integer.parseInt(value.getValue()));
-									}
+						for (int j = (dataPosition+2); j < (readerHelper.getRowCount())-1; j++) {
+							String field = "";
+							String value = "";
+							
+							for(Map.Entry<String, String> excelValue : indexDataExcel.entrySet()){
+								String data = "";
+								if(excelValue.getValue().indexOf(",") != -1){
+									String[] indexPosition = excelValue.getValue().split(",");
+									Integer indexRow = Integer.parseInt(indexPosition[0]);
+									Integer indexColoum = Integer.parseInt(indexPosition[1]);
 									
-									BeanUtils.setProperty(
-											institusi, 
-											GlobalHelper.StrConvertToVar(value.getKey()), 
-											data
-										);
+									data = readerHelper.getVelueUsingIndex(indexRow, indexColoum);
+									log.debug("Row: "+indexRow+" Coloum: "+indexColoum+ " Value: "+readerHelper.getVelueUsingIndex(indexRow, indexColoum));
+								}else{
+									data = readerHelper.getVelueUsingIndex(i, Integer.parseInt(excelValue.getValue()));
 								}
-								institusi.setIdService(dbSetting.getId());
-								institusi1Repository.save(institusi);
-								log.debug(institusi);
-							} else if (institusiList.getInstitusiTabel() == 2) {
-								Institusi2 institusi = new Institusi2();
 								
-								for(Map.Entry<String, String> value : indexDataExcel.entrySet()){
-									String data = "";
-									if(value.getValue().indexOf(",") != -1){
-										String[] indexPosition = value.getValue().split(",");
-										Integer indexRow = Integer.parseInt(indexPosition[0]);
-										Integer indexColoum = Integer.parseInt(indexPosition[1]);
-										
-										data = readerHelper.getVelueUsingIndex(indexRow, indexColoum);
-										log.debug("Row: "+indexRow+" Coloum: "+indexColoum+ " Value: "+readerHelper.getVelueUsingIndex(indexRow, indexColoum));
-									}else{
-										data = readerHelper.getVelueUsingIndex(i, Integer.parseInt(value.getValue().trim()));
-									}
-									
-									BeanUtils.setProperty(
-											institusi, 
-											GlobalHelper.StrConvertToVar(value.getKey()), 
-											data
-										);
-								}
-								institusi.setIdService(dbSetting.getId());
-								institusi2Repository.save(institusi);
-								log.debug(institusi);
-							} else if (institusiList.getInstitusiTabel() == 3) {
-								Institusi3 institusi = new Institusi3();
-								
-								for(Map.Entry<String, String> value : indexDataExcel.entrySet()){
-									String data = "";
-									if(value.getValue().indexOf(",") != -1){
-										String[] indexPosition = value.getValue().split(",");
-										Integer indexRow = Integer.parseInt(indexPosition[0]);
-										Integer indexColoum = Integer.parseInt(indexPosition[1]);
-										
-										data = readerHelper.getVelueUsingIndex(indexRow, indexColoum);
-										log.debug("Row: "+indexRow+" Coloum: "+indexColoum+ " Value: "+readerHelper.getVelueUsingIndex(indexRow, indexColoum));
-									}else{
-										data = readerHelper.getVelueUsingIndex(i, Integer.parseInt(value.getValue().trim()));
-									}
-									
-									BeanUtils.setProperty(
-											institusi, 
-											GlobalHelper.StrConvertToVar(value.getKey()), 
-											data
-										);
-								}
-								institusi.setIdService(dbSetting.getId());
-								institusi3Repository.save(institusi);
-								log.debug(institusi);
-							} else if (institusiList.getInstitusiTabel() == 4) {
-								Institusi4 institusi = new Institusi4();
-								
-								for(Map.Entry<String, String> value : indexDataExcel.entrySet()){
-									String data = "";
-									if(value.getValue().indexOf(",") != -1){
-										String[] indexPosition = value.getValue().split(",");
-										Integer indexRow = Integer.parseInt(indexPosition[0]);
-										Integer indexColoum = Integer.parseInt(indexPosition[1]);
-										
-										data = readerHelper.getVelueUsingIndex(indexRow, indexColoum);
-										log.debug("Row: "+indexRow+" Coloum: "+indexColoum+ " Value: "+readerHelper.getVelueUsingIndex(indexRow, indexColoum));
-									}else{
-										data = readerHelper.getVelueUsingIndex(i, Integer.parseInt(value.getValue().trim()));
-									}
-									
-									BeanUtils.setProperty(
-											institusi, 
-											GlobalHelper.StrConvertToVar(value.getKey()), 
-											data
-										);
-								}
-								institusi.setIdService(dbSetting.getId());
-								institusi4Repository.save(institusi);
-								log.debug(institusi);
-							} else if (institusiList.getInstitusiTabel() == 5) {
-								Institusi5 institusi = new Institusi5();
-								
-								for(Map.Entry<String, String> value : indexDataExcel.entrySet()){
-									String data = "";
-									if(value.getValue().indexOf(",") != -1){
-										String[] indexPosition = value.getValue().split(",");
-										Integer indexRow = Integer.parseInt(indexPosition[0]);
-										Integer indexColoum = Integer.parseInt(indexPosition[1]);
-										
-										data = readerHelper.getVelueUsingIndex(indexRow, indexColoum);
-										log.debug("Row: "+indexRow+" Coloum: "+indexColoum+ " Value: "+readerHelper.getVelueUsingIndex(indexRow, indexColoum));
-									}else{
-										data = readerHelper.getVelueUsingIndex(i, Integer.parseInt(value.getValue().trim()));
-									}
-									
-									BeanUtils.setProperty(
-											institusi, 
-											GlobalHelper.StrConvertToVar(value.getKey()), 
-											data
-										);
-								}
-								institusi.setIdService(dbSetting.getId());
-								institusi5Repository.save(institusi);
-								log.debug(institusi);
-							} else if (institusiList.getInstitusiTabel() == 6) {
-								Institusi6 institusi = new Institusi6();
-								
-								for(Map.Entry<String, String> value : indexDataExcel.entrySet()){
-									String data = "";
-									if(value.getValue().indexOf(",") != -1){
-										String[] indexPosition = value.getValue().split(",");
-										Integer indexRow = Integer.parseInt(indexPosition[0]);
-										Integer indexColoum = Integer.parseInt(indexPosition[1]);
-										
-										data = readerHelper.getVelueUsingIndex(indexRow, indexColoum);
-										log.debug("Row: "+indexRow+" Coloum: "+indexColoum+ " Value: "+readerHelper.getVelueUsingIndex(indexRow, indexColoum));
-									}else{
-										data = readerHelper.getVelueUsingIndex(i, Integer.parseInt(value.getValue().trim()));
-									}
-									
-									BeanUtils.setProperty(
-											institusi, 
-											GlobalHelper.StrConvertToVar(value.getKey()), 
-											data
-										);
-								}
-								institusi.setIdService(dbSetting.getId());
-								institusi6Repository.save(institusi);
-								log.debug(institusi);
-							} 
+								field += "`"+excelValue.getKey()+"`,";
+								value += "'"+data+"',";
+							}
+							
+							field += "`id_service`";
+							value += "'"+dbSetting.getId()+"'";
+							
+							String sql = "insert into institusi"+institusiList.getInstitusiTabel() +"("+field+") values("+value+")";
+							log.debug("SQL Insert: "+ sql);
+							globalHelper.updateQuery(sql);
+							globalHelper.closeConnection();								
 						}
 					}
 					
-					sql = "update dbsetting set status = 'Ready' where id = "+dbSetting.getId();
-					globalHelper.updateQuery(sql, request);
+					log.debug("Finish to copy database");
+					
+					log.debug("Update status to ready");
+					String sql = "update dbsetting set status = 'Ready' where id = "+dbSetting.getId();
+					globalHelper.updateQuery(sql);
 					globalHelper.closeConnection();
+					
 				}
 				
+				responseHelper.putData(new ArrayList<Object>(), "Success", countExDatabase+" data migrated.");
 			}
-			responseHelper.putData(new ArrayList<Object>(), "Success", countExDatabase+" data migrated.");
 		} catch (Exception e) {
 			responseHelper.putData(new ArrayList<Object>(), "Failed", e.getMessage());
-			log.debug(e);
+			e.printStackTrace();
 		}
 		
 		return responseHelper.getResponseData();
@@ -831,12 +768,12 @@ public class SetupServiceImpl implements SetupService{
 			}else{
 				for (int i = 1; i <= 6; i++) {
 					String sql = "delete from institusi"+i+" where id_service = "+dbSetting.getId();
-					globalHelper.updateQuery(sql, request);
+					globalHelper.updateQuery(sql);
 					globalHelper.closeConnection();
 				}
 				
 				String sql = "update dbsetting set status = 'Empty' where id = "+dbSetting.getId();
-				globalHelper.updateQuery(sql, request);
+				globalHelper.updateQuery(sql);
 				globalHelper.closeConnection();				
 			}
 			
@@ -847,5 +784,18 @@ public class SetupServiceImpl implements SetupService{
 			 log.debug(e);
 		}
 		return responseHelper.getResponseData();
+	}
+	
+	public String getWhereQuery(List<DBTranslate> dbTranslates) {
+		String whereQuery = "";
+		
+		for (DBTranslate dbTranslate : dbTranslates) {
+			if(dbTranslate.getTargetTableName().equals("local_date")){
+				whereQuery = " where "+dbTranslate.getOriginTableName()+" like '%"+utilHelper.convertDateToDB()+"%'";
+				break;
+			}
+		}
+		
+		return whereQuery;
 	}
 }

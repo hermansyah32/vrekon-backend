@@ -31,7 +31,19 @@ public class RekonController {
 			HttpServletRequest request, HttpSession session){
 		log.debug("Routing to /compare-data param: "+rekonCompareRequest);
 		
-		return rekonService.compareData(rekonCompareRequest, response, request, session);
+		return rekonService.startCompareData(rekonCompareRequest, response, request, session);
+	}
+	
+	@RequestMapping(value="/compare-setting", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, List<?>> getCompareSetting(){
+		return rekonService.getCompareSetting();
+	}
+	
+	@RequestMapping(value="/compare-setting-tambah", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, List<?>> addCompareSetting(@RequestBody RekonCompareRequest rekonCompareRequest){
+		return rekonService.addCompareSetting(rekonCompareRequest);
 	}
 	
 	@RequestMapping(value="/download-rekon/{filename}/{ext}", method=RequestMethod.GET)
