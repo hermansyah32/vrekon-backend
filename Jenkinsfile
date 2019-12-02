@@ -1,4 +1,5 @@
 pipeline {
+    echo 'Run pipeline'
     agent any
     environment {
         DOCKER_IMAGE_NAME = "harda00/vrekon-backend"
@@ -7,7 +8,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Running build automation'
-                sh 'cd vrekon; mvn install'
+                sh 'cd vrekon; usr\bin\mvn install'
                 archiveArtifacts artifacts: 'vrekon/target/vrekon.war'
             }
         }
