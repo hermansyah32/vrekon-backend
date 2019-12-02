@@ -7,8 +7,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Running build automation'
-                sh 'mvn install'
-                archiveArtifacts artifacts: 'target/vrekon.war'
+                sh 'cd vrekon; mvn install'
+                archiveArtifacts artifacts: 'vrekon/target/vrekon.war'
             }
         }
         stage('Build Docker Image') {
