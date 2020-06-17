@@ -1,12 +1,30 @@
 package com.mpc.vrekon.model;
 
+import com.mpc.vrekon.util.ResponseCode;
+import org.apache.log4j.Logger;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class ResponseWrapper<T> {
     private Integer code;
     private String message;
     private T dataDetail;
-    private String timestap;
+    private String timeStamp;
+
+    private Logger log = Logger.getLogger(getClass());
+
+    public ResponseWrapper() {
+        this.timeStamp = new SimpleDateFormat("yyyy-M-dd hh:mm:ss").format(new Date());
+    }
+
+    public ResponseWrapper(ResponseCode responseCode, T dataDetail) {
+        this.code = responseCode.getValue();
+        this.message = responseCode.getMessage();
+        this.dataDetail = dataDetail;
+        this.setTimeStamp(new SimpleDateFormat("yyyy-M-dd hh:mm:ss").format(new Date()));
+    }
 
     public Integer getCode() {
         return code;
@@ -14,6 +32,7 @@ public class ResponseWrapper<T> {
 
     public void setCode(Integer code) {
         this.code = code;
+        log.debug("Response Wrapper: code => " + this.code);
     }
 
     public String getMessage() {
@@ -22,6 +41,7 @@ public class ResponseWrapper<T> {
 
     public void setMessage(String message) {
         this.message = message;
+        log.debug("Response Wrapper: message => " + this.message);
     }
 
     public T getDataDetail() {
@@ -30,14 +50,21 @@ public class ResponseWrapper<T> {
 
     public void setDataDetail(T dataDetail) {
         this.dataDetail = dataDetail;
+        log.debug("Response Wrapper: message => " + this.dataDetail.toString());
     }
 
-    public String getTimestap() {
-        return timestap;
+    public String getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setTimestap(String timestap) {
-        this.timestap = timestap;
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+        log.debug("Response Wrapper: timestamp => " + this.dataDetail);
+    }
+
+    public void systemError(String message){
+        this.setCode(ResponseCode.INTERNAL_ERROR.getValue());
+        this.setMessage(message);
     }
 
     @Override
@@ -46,7 +73,7 @@ public class ResponseWrapper<T> {
                 "code=" + code +
                 ", message='" + message + '\'' +
                 ", dataDetail=" + dataDetail +
-                ", timestap='" + timestap + '\'' +
+                ", timeStamp='" + timeStamp + '\'' +
                 '}';
     }
 }

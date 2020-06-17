@@ -1,24 +1,15 @@
 package com.mpc.vrekon.service;
 
-import com.mpc.vrekon.model.RekonCompareRequest;
+import com.mpc.vrekon.model.ResponseWrapper;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 import java.util.Map;
 
 public interface ApplicationService {
-    Map<String, List<?>> application (RekonCompareRequest rekonCompareRequest, HttpServletResponse response,
-                                     HttpServletRequest request, HttpSession session);
-    Map<String, List<?>> applicationDetail (RekonCompareRequest rekonCompareRequest, HttpServletResponse response,
-                                      HttpServletRequest request, HttpSession session);
-    Map<String, List<?>> applicationGetByID (RekonCompareRequest rekonCompareRequest, HttpServletResponse response,
-                                      HttpServletRequest request, HttpSession session);
-    Map<String, List<?>> applicationAdd (RekonCompareRequest rekonCompareRequest, HttpServletResponse response,
-                                      HttpServletRequest request, HttpSession session);
-    Map<String, List<?>> applicationEdit (RekonCompareRequest rekonCompareRequest, HttpServletResponse response,
-                                      HttpServletRequest request, HttpSession session);
-    Map<String, List<?>> applicationDelete (RekonCompareRequest rekonCompareRequest, HttpServletResponse response,
-                                      HttpServletRequest request, HttpSession session);
+    ResponseWrapper application (HttpServletRequest servletRequest);
+    ResponseWrapper applicationGetDetail (HttpServletRequest servletRequest);
+    ResponseWrapper applicationGetByID (HttpServletRequest servletRequest, Map<String, Object> request);
+    ResponseWrapper applicationAdd (HttpServletRequest servletRequest, Map<String, Object> request);
+    ResponseWrapper applicationEdit (HttpServletRequest servletRequest, Map<String, Object> request);
+    ResponseWrapper applicationDelete (HttpServletRequest servletRequest, Map<String, Object> request);
 }

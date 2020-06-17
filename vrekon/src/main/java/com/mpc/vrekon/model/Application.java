@@ -13,6 +13,18 @@ public class Application {
     private Integer temporary_tabel;
     private String application_name;
 
+    public Application(Integer temporary_tabel, String application_name) {
+        this.temporary_tabel = temporary_tabel;
+        this.application_name = application_name;
+    }
+
+    public Application(Integer id, Integer temporary_tabel, String application_name) {
+        // this constuctor used for edit
+        this.id = id;
+        this.temporary_tabel = temporary_tabel;
+        this.application_name = application_name;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -1,4 +1,4 @@
-package com.mpc.vrekon.model;
+package com.mpc.vrekon.util;
 
 public class RequestParser {
 }
