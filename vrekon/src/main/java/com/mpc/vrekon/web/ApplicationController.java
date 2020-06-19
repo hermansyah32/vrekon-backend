@@ -38,7 +38,7 @@ public class ApplicationController {
     @RequestMapping(value="/application-get-by-id", method= RequestMethod.POST)
     @ResponseBody
     public ResponseWrapper applicationGetByID(HttpServletRequest servletRequest, @RequestBody Map<String, Object> request){
-        log.debug("Routing to /application-get-by-id: "+ request.get("id").toString());
+        log.debug("Routing to /application-get-by-id: id =>"+ request.get("id").toString());
         return applicationService.applicationGetByID(servletRequest, request);
     }
 

@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,11 +31,11 @@ public class SourceConfigServiceImpl implements SourceConfigService {
         return null;
     }
 
-    public ResponseWrapper sourceConfigAdd(HttpServletRequest servletRequest, Map<String, Object> request) {
+    public ResponseWrapper sourceConfigAdd(HttpServletRequest servletRequest, Map<String, Object> request, MultipartFile[] files) {
         return null;
     }
 
-    public ResponseWrapper sourceConfigEdit(HttpServletRequest servletRequest, Map<String, Object> request) {
+    public ResponseWrapper sourceConfigEdit(HttpServletRequest servletRequest, Map<String, Object> request, MultipartFile[] files) {
         return null;
     }
 

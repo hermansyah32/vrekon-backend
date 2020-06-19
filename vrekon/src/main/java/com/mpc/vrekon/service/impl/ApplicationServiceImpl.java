@@ -54,9 +54,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
 
+    // TODO: Mengambil data berdasarkan ID beserta source config dan source translatenya
     public ResponseWrapper applicationGetByID(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
-            responseWrapper = new ResponseWrapper<Application>(ResponseCode.OK, applicationRepository.findOne(1));
+            Application application = applicationRepository.findOne(Integer.valueOf(request.get("id").toString()));
+            if (application == null)
+                throw new EntityNotFoundException("No data with ID: " + request.get("id").toString());
+            responseWrapper = new ResponseWrapper<Application>(ResponseCode.OK, application);
             return responseWrapper;
         }catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +73,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ResponseWrapper applicationAdd(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
             Application application = new Application(
-                    Integer.getInteger(request.get("temporaryTable").toString()),
+                    Integer.valueOf(request.get("temporaryTable").toString()),
                     request.get("applicationName").toString()
             );
             applicationRepository.save(application);
@@ -85,11 +89,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     public ResponseWrapper applicationEdit(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
-            Application application = applicationRepository.findOne(Integer.getInteger(request.get("id").toString()));
-            if (application == null){
+            Application application = applicationRepository.findOne(Integer.valueOf(request.get("id").toString()));
+            if (application == null)
                 throw new EntityNotFoundException("No data with ID: " + request.get("id").toString());
-            }
-            application.setTemporary_tabel(Integer.getInteger(request.get("temporaryTable").toString()));
+            application.setTemporary_tabel(Integer.valueOf(request.get("temporaryTable").toString()));
             application.setApplication_name(request.get("applicationName").toString());
             applicationRepository.save(application);
             responseWrapper = new ResponseWrapper<List<String>>(ResponseCode.OK, new ArrayList<String>());
@@ -104,7 +107,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     public ResponseWrapper applicationDelete(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
-            applicationRepository.delete(Integer.getInteger(request.get("id").toString()));
+            applicationRepository.delete(Integer.valueOf(request.get("id").toString()));
             responseWrapper = new ResponseWrapper<List<String>>(ResponseCode.OK, new ArrayList<String>());
             return responseWrapper;
         }catch (Exception e) {

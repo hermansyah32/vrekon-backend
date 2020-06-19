@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.xml.transform.Source;
 
 @Entity
 public class SourceConfig {
@@ -19,6 +20,10 @@ public class SourceConfig {
     private String db_password;
     private String file_name;
     private String last_update;
+
+    public SourceConfig(){
+
+    }
 
     public Integer getId() {
         return id;

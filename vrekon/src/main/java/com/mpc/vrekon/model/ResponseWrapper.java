@@ -16,14 +16,13 @@ public class ResponseWrapper<T> {
     private Logger log = Logger.getLogger(getClass());
 
     public ResponseWrapper() {
-        this.timeStamp = new SimpleDateFormat("yyyy-M-dd hh:mm:ss").format(new Date());
     }
 
     public ResponseWrapper(ResponseCode responseCode, T dataDetail) {
         this.code = responseCode.getValue();
         this.message = responseCode.getMessage();
         this.dataDetail = dataDetail;
-        this.setTimeStamp(new SimpleDateFormat("yyyy-M-dd hh:mm:ss").format(new Date()));
+        this.timeStamp = new SimpleDateFormat("yyyy-M-dd hh:mm:ss").format(new Date());
     }
 
     public Integer getCode() {
@@ -65,6 +64,7 @@ public class ResponseWrapper<T> {
     public void systemError(String message){
         this.setCode(ResponseCode.INTERNAL_ERROR.getValue());
         this.setMessage(message);
+        this.timeStamp = new SimpleDateFormat("yyyy-M-dd hh:mm:ss").format(new Date());
     }
 
     @Override

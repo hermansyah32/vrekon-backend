@@ -14,6 +14,9 @@ public class SourceTranslate {
     private String original_field_name;
     private String temporary_field_name;
 
+    public SourceTranslate() {
+    }
+
     public Integer getId() {
         return id;
     }

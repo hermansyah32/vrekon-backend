@@ -13,7 +13,7 @@ public class DBTranslate{
 	private Integer idService;
 	private String originTableName;
 	private String targetTableName;
-		
+
 	public Integer getId() {
 		return id;
 	}

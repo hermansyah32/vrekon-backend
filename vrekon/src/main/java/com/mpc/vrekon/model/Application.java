@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 @Entity
 public class Application {
     @Id
@@ -12,6 +11,9 @@ public class Application {
     private Integer id;
     private Integer temporary_tabel;
     private String application_name;
+
+    public Application() {
+    }
 
     public Application(Integer temporary_tabel, String application_name) {
         this.temporary_tabel = temporary_tabel;

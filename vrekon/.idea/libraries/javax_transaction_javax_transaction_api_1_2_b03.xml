@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="javax.transaction:javax.transaction-api:1.2-b03" type="repository">
+    <properties maven-id="javax.transaction:javax.transaction-api:1.2-b03" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/javax/transaction/javax.transaction-api/1.2-b03/javax.transaction-api-1.2-b03.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

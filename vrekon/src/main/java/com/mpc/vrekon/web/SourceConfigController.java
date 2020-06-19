@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -40,14 +42,16 @@ public class SourceConfigController {
 
     @RequestMapping(value="/source-config-add", method= RequestMethod.POST)
     @ResponseBody
-    public ResponseWrapper sourceConfigAdd(HttpServletRequest servletRequest, Map<String, Object> request){
-        return sourceConfigService.sourceConfigAdd(servletRequest, request);
+    public ResponseWrapper sourceConfigAdd(HttpServletRequest servletRequest, Map<String, Object> request,
+                                           @RequestParam(value="files", required=false) MultipartFile[] files){
+        return sourceConfigService.sourceConfigAdd(servletRequest, request, files);
     }
 
     @RequestMapping(value="/source-config-edit", method= RequestMethod.POST)
     @ResponseBody
-    public ResponseWrapper sourceConfigEdit(HttpServletRequest servletRequest, Map<String, Object> request){
-        return sourceConfigService.sourceConfigEdit(servletRequest, request);
+    public ResponseWrapper sourceConfigEdit(HttpServletRequest servletRequest, Map<String, Object> request,
+                                            @RequestParam(value="files", required=false) MultipartFile[] files){
+        return sourceConfigService.sourceConfigEdit(servletRequest, request, files);
     }
 
     @RequestMapping(value="/source-config-delete", method= RequestMethod.POST)
