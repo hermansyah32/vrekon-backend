@@ -5,6 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TemporaryTableGenerator {
 
     public void generateTable(){
-
+        // TODO : try mybatis instead hibernate
     }
 }

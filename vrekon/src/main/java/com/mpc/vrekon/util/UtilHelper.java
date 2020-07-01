@@ -6,37 +6,52 @@ import java.util.Date;
 import java.util.List;
 
 public class UtilHelper {
-	public String convertNowDateWithFormat(String format){
+
+	private static String _datePatternDB = "yyyy-MM-dd HH:mm:ss";
+	private static String _datePattern = "dd-MM-yyyy";
+
+	public static String convertNowDateWithFormat(String format){
 		SimpleDateFormat formatter = new SimpleDateFormat(format);
 		Date date = new Date();
 		return formatter.format(date);
 	}
 	
-	public String convertDateToDB() {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	public static String convertDateToDB() {
+		SimpleDateFormat formatter = new SimpleDateFormat(_datePatternDB);
 		Date date = new Date();
 		return formatter.format(date);
 	}
 	
-	public String convertDateToDB(String date) {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		Date dbDate = this.parseToDate(date);
+	public static String convertDateToDB(String date) {
+		SimpleDateFormat formatter = new SimpleDateFormat(_datePatternDB);
+		Date dbDate = parseToDate(date);
 		
 		return formatter.format(dbDate);			
 	}
 	
-	public String convertDateToView() {
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+	public static String convertDateToView() {
+		SimpleDateFormat formatter = new SimpleDateFormat(_datePattern);
+		Date date = new Date();
+		return formatter.format(date);
+	}
+
+	public static String convertDateToView(String pattern) {
+		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 		Date date = new Date();
 		return formatter.format(date);
 	}
 	
-	public String convertDateToView(Date date) {
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+	public static String convertDateToView(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat(_datePattern);
+		return formatter.format(date);
+	}
+
+	public static String convertDateToView(Date date, String pattern) {
+		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 		return formatter.format(date);
 	}
 	
-	public Date parseToDate(String data) {
+	public static Date parseToDate(String data) {
 		Date foormatEquals = null;
 		List<String> formatTemplate = new ArrayList<String>();
 		formatTemplate.add("dd/MM/yyyy");
@@ -68,7 +83,7 @@ public class UtilHelper {
 		return str;
 	}
 	
-	public String getFileExtension(String fileName) {
+	public static String getFileExtension(String fileName) {
         if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
         return fileName.substring(fileName.lastIndexOf(".")+1);
         else return "";

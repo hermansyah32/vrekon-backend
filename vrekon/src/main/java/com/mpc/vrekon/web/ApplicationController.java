@@ -1,9 +1,6 @@
 package com.mpc.vrekon.web;
 
-import com.mpc.vrekon.model.Application;
 import com.mpc.vrekon.service.ApplicationService;
-import com.mpc.vrekon.service.RekonService;
-import com.mpc.vrekon.util.ResponseCode;
 import com.mpc.vrekon.model.ResponseWrapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Map;
 
 @Controller

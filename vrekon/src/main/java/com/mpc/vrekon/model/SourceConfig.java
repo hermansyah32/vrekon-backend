@@ -1,9 +1,6 @@
 package com.mpc.vrekon.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.xml.transform.Source;
 
 @Entity
@@ -11,18 +8,34 @@ public class SourceConfig {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-    private Integer id_application;
-    private String source_type;
-    private String db_host;
-    private Integer db_port;
-    private String db_name;
-    private String db_username;
-    private String db_password;
-    private String file_name;
-    private String last_update;
+    private Integer idApplication;
+    private String sourceType;
+    private String dbHost;
+    private Integer dbPort;
+    private String dbName;
+    private String dbUsername;
+    private String dbPassword;
+    @Column(columnDefinition = "TEXT")
+    private String fileNames;
+    private String tableName;
+    private String lastUpdate;
 
     public SourceConfig(){
 
+    }
+
+    public SourceConfig(Integer idApplication, String sourceType, String dbHost, Integer dbPort, String dbName,
+                        String dbUsername, String dbPassword, String fileNames, String tableName, String lastUpdate) {
+        this.idApplication = idApplication;
+        this.sourceType = sourceType;
+        this.dbHost = dbHost;
+        this.dbPort = dbPort;
+        this.dbName = dbName;
+        this.dbUsername = dbUsername;
+        this.dbPassword = dbPassword;
+        this.fileNames = fileNames;
+        this.tableName = tableName;
+        this.lastUpdate = lastUpdate;
     }
 
     public Integer getId() {
@@ -33,91 +46,100 @@ public class SourceConfig {
         this.id = id;
     }
 
-    public Integer getId_application() {
-        return id_application;
+    public Integer getIdApplication() {
+        return idApplication;
     }
 
-    public void setId_application(Integer id_application) {
-        this.id_application = id_application;
+    public void setIdApplication(Integer idApplication) {
+        this.idApplication = idApplication;
     }
 
-    public String getSource_type() {
-        return source_type;
+    public String getSourceType() {
+        return sourceType;
     }
 
-    public void setSource_type(String source_type) {
-        this.source_type = source_type;
+    public void setSourceType(String sourceType) {
+        this.sourceType = sourceType;
     }
 
-    public String getDb_host() {
-        return db_host;
+    public String getDbHost() {
+        return dbHost;
     }
 
-    public void setDb_host(String db_host) {
-        this.db_host = db_host;
+    public void setDbHost(String dbHost) {
+        this.dbHost = dbHost;
     }
 
-    public Integer getDb_port() {
-        return db_port;
+    public Integer getDbPort() {
+        return dbPort;
     }
 
-    public void setDb_port(Integer db_port) {
-        this.db_port = db_port;
+    public void setDbPort(Integer dbPort) {
+        this.dbPort = dbPort;
     }
 
-    public String getDb_name() {
-        return db_name;
+    public String getDbName() {
+        return dbName;
     }
 
-    public void setDb_name(String db_name) {
-        this.db_name = db_name;
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
     }
 
-    public String getDb_username() {
-        return db_username;
+    public String getDbUsername() {
+        return dbUsername;
     }
 
-    public void setDb_username(String db_username) {
-        this.db_username = db_username;
+    public void setDbUsername(String dbUsername) {
+        this.dbUsername = dbUsername;
     }
 
-    public String getDb_password() {
-        return db_password;
+    public String getDbPassword() {
+        return dbPassword;
     }
 
-    public void setDb_password(String db_password) {
-        this.db_password = db_password;
+    public void setDbPassword(String dbPassword) {
+        this.dbPassword = dbPassword;
     }
 
-    public String getFile_name() {
-        return file_name;
+    public String getFileNames() {
+        return fileNames;
     }
 
-    public void setFile_name(String file_name) {
-        this.file_name = file_name;
+    public void setFileNames(String fileNames) {
+        this.fileNames = fileNames;
     }
 
-    public String getLast_update() {
-        return last_update;
+    public String getTableName() {
+        return tableName;
     }
 
-    public void setLast_update(String last_update) {
-        this.last_update = last_update;
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    public String getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(String lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     @Override
     public String toString() {
         return "SourceConfig{" +
                 "id=" + id +
-                ", id_application=" + id_application +
-                ", source_type='" + source_type + '\'' +
-                ", db_host='" + db_host + '\'' +
-                ", db_port=" + db_port +
-                ", db_name='" + db_name + '\'' +
-                ", db_username='" + db_username + '\'' +
-                ", db_password='" + db_password + '\'' +
-                ", file_name='" + file_name + '\'' +
-                ", last_update='" + last_update + '\'' +
+                ", idApplication=" + idApplication +
+                ", sourceType='" + sourceType + '\'' +
+                ", dbHost='" + dbHost + '\'' +
+                ", dbPort=" + dbPort +
+                ", dbName='" + dbName + '\'' +
+                ", dbUsername='" + dbUsername + '\'' +
+                ", dbPassword='" + dbPassword + '\'' +
+                ", fileNames='" + fileNames + '\'' +
+                ", tableName='" + tableName + '\'' +
+                ", lastUpdate='" + lastUpdate + '\'' +
                 '}';
     }
 }
