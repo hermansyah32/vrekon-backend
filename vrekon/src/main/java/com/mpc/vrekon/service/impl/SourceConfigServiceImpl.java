@@ -49,7 +49,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
     // TODO : add source translate to response
     public ResponseWrapper sourceConfigGetByID(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
-            SourceConfig sourceConfig = sourceConfigRepository.findOne(Integer.valueOf(request.get("id").toString()));
+            SourceConfig sourceConfig = sourceConfigRepository.findById(Integer.valueOf(request.get("id").toString())).get();
             if (sourceConfig == null)
                 throw new EntityNotFoundException("No data with data ID: " + request.get("idApplication").toString());
 
@@ -72,7 +72,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
         SourceConfig sourceConfig;
         StringBuilder allFileNameSkiped = new StringBuilder();
         try{
-            if (applicationRepository.findOne(Integer.valueOf(request.get("idApplication").toString())) == null){
+            if (applicationRepository.findById(Integer.valueOf(request.get("idApplication").toString())).isPresent()){
                 throw new EntityNotFoundException("No application with ID: " + request.get("id").toString());
             }
 
@@ -106,7 +106,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
                             log.debug("files transfered");
                         }else {
                             //unknown file extention, cancel transaction, delete incoming record
-                            sourceConfigRepository.delete(sourceConfig.getId());
+                            sourceConfigRepository.deleteById(sourceConfig.getId());
                             throw new FileUploadException("Unknown file");
                         }
                         //check file exists
@@ -151,7 +151,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
     // TODO: Penambahan parameter request "idSourceConfig"
     public ResponseWrapper sourceConfigEdit(HttpServletRequest servletRequest, Map<String, Object> request, MultipartFile[] files, HttpSession httpSession) {
         try{
-            SourceConfig sourceConfig = sourceConfigRepository.findOne(Integer.valueOf(request.get("idSourceConfig").toString()));
+            SourceConfig sourceConfig = sourceConfigRepository.findById(Integer.valueOf(request.get("idSourceConfig").toString())).get();
             if (sourceConfig == null){
                 throw new EntityNotFoundException("No data with ID: " + request.get("id").toString());
             }
@@ -182,7 +182,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
                             file.transferTo(fileTransfer);
                         }else {
                             //unknown file extention, cancel transaction, delete incomming record
-                            sourceConfigRepository.delete(sourceConfig.getId());
+                            sourceConfigRepository.deleteById(sourceConfig.getId());
                             throw new FileUploadException("Unknown file");
                         }
                         allFileName.append(fileExtention).append("/").append(fileName).append("%");
@@ -212,7 +212,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
 
     public ResponseWrapper sourceConfigDelete(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
-            sourceConfigRepository.delete(Integer.valueOf(request.get("id").toString()));
+            sourceConfigRepository.deleteById(Integer.valueOf(request.get("id").toString()));
             responseWrapper = new ResponseWrapper<List<String>>(ResponseCode.OK, new ArrayList<String>());
             return responseWrapper;
         }catch (Exception e) {

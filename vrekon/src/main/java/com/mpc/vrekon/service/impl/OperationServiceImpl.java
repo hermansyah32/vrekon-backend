@@ -41,7 +41,7 @@ public class OperationServiceImpl implements OperationService {
     public ResponseWrapper manualSyncron(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
             log.debug(request.get("id").toString());
-            SourceConfig sourceConfig = sourceConfigRepository.findOne(Integer.valueOf(request.get("id").toString()));
+            SourceConfig sourceConfig = sourceConfigRepository.findById(Integer.valueOf(request.get("id").toString())).get();
             if (sourceConfig == null)
                 throw new EntityNotFoundException("No data with data ID: " + request.get("idApplication").toString());
 
@@ -60,7 +60,7 @@ public class OperationServiceImpl implements OperationService {
         SourceConfig sourceConfig;
         StringBuilder allFileNameSkiped = new StringBuilder();
         try{
-            sourceConfig = sourceConfigRepository.findOne(Integer.valueOf(request.get("id").toString()));
+            sourceConfig = sourceConfigRepository.findById(Integer.valueOf(request.get("id").toString())).get();
             if (sourceConfig == null){
                 throw new EntityNotFoundException("No data with ID: " + request.get("id").toString());
             }
@@ -81,7 +81,7 @@ public class OperationServiceImpl implements OperationService {
                             log.debug("files transfered");
                         }else {
                             //unknown file extention, cancel transaction, delete incoming record
-                            sourceConfigRepository.delete(sourceConfig.getId());
+                            sourceConfigRepository.deleteById(sourceConfig.getId());
                             throw new FileUploadException("Unknown file");
                         }
                         //check file exists

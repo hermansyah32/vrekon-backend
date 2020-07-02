@@ -57,7 +57,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     // TODO: Mengambil data berdasarkan ID beserta source config dan source translatenya
     public ResponseWrapper applicationGetByID(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
-            Application application = applicationRepository.findOne(Integer.valueOf(request.get("id").toString()));
+            Application application = applicationRepository.findById(Integer.valueOf(request.get("id").toString())).get();
             if (application == null)
                 throw new EntityNotFoundException("No data with ID: " + request.get("id").toString());
             responseWrapper = new ResponseWrapper<Application>(ResponseCode.OK, application);
@@ -89,7 +89,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     public ResponseWrapper applicationEdit(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
-            Application application = applicationRepository.findOne(Integer.valueOf(request.get("id").toString()));
+            Application application = applicationRepository.findById(Integer.valueOf(request.get("id").toString())).get();
             if (application == null)
                 throw new EntityNotFoundException("No data with ID: " + request.get("id").toString());
             application.setTemporary_tabel(Integer.valueOf(request.get("temporaryTable").toString()));
@@ -107,7 +107,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     public ResponseWrapper applicationDelete(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
-            applicationRepository.delete(Integer.valueOf(request.get("id").toString()));
+            applicationRepository.deleteById(Integer.valueOf(request.get("id").toString()));
             responseWrapper = new ResponseWrapper<List<String>>(ResponseCode.OK, new ArrayList<String>());
             return responseWrapper;
         }catch (Exception e) {
