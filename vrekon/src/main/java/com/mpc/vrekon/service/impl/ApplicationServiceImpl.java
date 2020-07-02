@@ -44,7 +44,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     // TODO: Mengambil semua data beserta source config dan source translatenya
     public ResponseWrapper applicationGetDetail(HttpServletRequest servletRequest) {
         try {
-            responseWrapper = new ResponseWrapper<Application>(ResponseCode.OK, applicationRepository.findOne(1));
+            responseWrapper = new ResponseWrapper<List<Application>>(ResponseCode.OK, applicationRepository.findAll());
             return responseWrapper;
         }catch (Exception e) {
             e.printStackTrace();
