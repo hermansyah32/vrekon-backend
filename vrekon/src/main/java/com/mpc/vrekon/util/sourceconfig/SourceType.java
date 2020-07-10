@@ -5,7 +5,8 @@ import java.util.Map;
 
 public enum SourceType{
     RPT_FILE("rpt"),
-    XLS_FILE("xlx");
+    XLS_FILE("xlx"),
+    XLSX_FILE("xlxx");
 
     private static final Map<String, SourceType> enumList = new HashMap<String, SourceType>();
 

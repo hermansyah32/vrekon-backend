@@ -17,6 +17,12 @@ public class SourceTranslate {
     public SourceTranslate() {
     }
 
+    public SourceTranslate(Integer id_source_config, String original_field_name, String temporary_field_name) {
+        this.id_source_config = id_source_config;
+        this.original_field_name = original_field_name;
+        this.temporary_field_name = temporary_field_name;
+    }
+
     public Integer getId() {
         return id;
     }

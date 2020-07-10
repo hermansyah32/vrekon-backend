@@ -1,13 +1,24 @@
-package com.mpc.vrekon.model;
+package com.mpc.vrekon.util;
+
+import com.google.gson.Gson;
+import com.mpc.vrekon.util.UtilHelper;
+import org.apache.log4j.Logger;
+import org.hibernate.cfg.DefaultNamingStrategy;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 @Entity
-public class TemporaryTable {
+public class TemporaryTable extends DefaultNamingStrategy {
+
+    Logger log = Logger.getLogger(getClass());
+
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
@@ -15,13 +26,13 @@ public class TemporaryTable {
     private String issuer;
     private String transferee;
     private String originator;
-    private int txnsrc;
-    private int txndest;
+    private Integer txnsrc;
+    private Integer txndest;
     private String alternate_acquirer;
     private String product;
     private String invoice_number;
-    private int respcode;
-    private int reason_code;
+    private Integer respcode;
+    private Integer reason_code;
     private String revcode;
     private String orig_msg;
     private Date orig_date;
@@ -45,12 +56,12 @@ public class TemporaryTable {
     private String issuer_data;
     private String acquirer_data;
     private String avail_balance;
-    private String currency_code;
+    private String currency_code = "ID";
     private double txn_fee;
     private double device_fee;
     private String node;
     private String version;
-    private int trace;
+    private Integer trace;
     private Date localdate;
     private Date localtime;
 
@@ -396,6 +407,46 @@ public class TemporaryTable {
 
     public void setLocaltime(Date localtime) {
         this.localtime = localtime;
+    }
+
+    @Override
+    public String tableName(String tableName) {
+        return super.tableName(tableName);
+    }
+
+    public void translateField(String[] temporaryField, String[] originalField, Map<String, Object> sourceRecord){
+        try {
+            Field[] fields = this.getClass().getDeclaredFields();
+            for (int indexField = 0; indexField < temporaryField.length; indexField++) {
+                if(sourceRecord.containsKey(originalField[indexField])){
+                    for(Field field: fields){
+                        field.setAccessible(true);
+                        String fieldDataType = field.getType().getSimpleName();
+                        if (field.getName().equals(temporaryField[indexField])){
+                            if (fieldDataType.equals("String")){
+                                field.set(this, sourceRecord.get(originalField[indexField]).toString());
+                            }
+
+                            if (fieldDataType.equals("double")){
+                                field.set(this, Double.valueOf(sourceRecord.get(originalField[indexField]).toString()));
+                            }
+
+                            if (fieldDataType.equals("Integer")){
+                                field.set(this, Integer.valueOf(sourceRecord.get(originalField[indexField]).toString()));
+                            }
+
+                            if (fieldDataType.equals("Date")){
+                                field.set(this, UtilHelper.convertStringToDate(sourceRecord.get(originalField[indexField]).toString()));
+                            }
+                        }
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
     }
 
     @Override

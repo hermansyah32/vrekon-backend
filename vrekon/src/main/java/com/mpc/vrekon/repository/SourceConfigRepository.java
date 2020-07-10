@@ -9,4 +9,8 @@ import java.util.List;
 @Repository
 public interface SourceConfigRepository extends JpaRepository<SourceConfig, Integer> {
     List<SourceConfig> findByIdApplication(Integer idApplication);
+
+    List<SourceConfig> findBySourceType(String dbType);
+
+    List<SourceConfig> findBySourceTypeOrSourceType(String sourceType, String orSourceType);
 }

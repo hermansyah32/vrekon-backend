@@ -1,7 +1,10 @@
 package com.mpc.vrekon.util;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +12,31 @@ public class UtilHelper {
 
 	private static String _datePatternDB = "yyyy-MM-dd HH:mm:ss";
 	private static String _datePattern = "dd-MM-yyyy";
+
+	public static String arrayToString(String[] strings){
+		return Arrays.toString(strings).replace("[", "").replace("]", "");
+	}
+
+	public static Date convertStringToDate(String dateString, String format){
+		DateFormat dateFormat = new SimpleDateFormat(format);
+		try {
+			return dateFormat.parse(dateString);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return new Date();
+		}
+	}
+
+	public static Date convertStringToDate(String dateString){
+		DateFormat dateFormat = new SimpleDateFormat(_datePatternDB);
+		try {
+			return dateFormat.parse(dateString);
+		} catch (ParseException e) {
+			System.out.println(dateString);
+			e.printStackTrace();
+			return new Date();
+		}
+	}
 
 	public static String convertNowDateWithFormat(String format){
 		SimpleDateFormat formatter = new SimpleDateFormat(format);
