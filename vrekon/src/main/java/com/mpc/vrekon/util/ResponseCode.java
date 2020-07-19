@@ -6,10 +6,10 @@ public enum ResponseCode {
     INTERNAL_ERROR("02", ""),
     BAD_REQUEST("03", "");
 
-    private int responseCode;
+    private String responseCode;
     private String message;
 
-    public int getValue(){
+    public String getValue(){
         return this.responseCode;
     }
 
@@ -18,7 +18,7 @@ public enum ResponseCode {
     }
 
     private ResponseCode (String code, String message){
-        this.responseCode = Integer.parseInt(code);
+        this.responseCode = code;
         this.message = message;
     }
 }

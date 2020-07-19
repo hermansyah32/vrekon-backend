@@ -117,9 +117,9 @@ public class ConnectionHelper {
 	public String setSelectedField(List<SourceTranslate> dbTranslates){
 		String translate = "";
 		for (SourceTranslate dbTranslate : dbTranslates) {
-			translate += dbTranslate.getOriginal_field_name();
+			translate += dbTranslate.getOriginalFieldName();
 			translate += " AS ";
-			translate += dbTranslate.getTemporary_field_name();
+			translate += dbTranslate.getTemporaryFieldName();
 			translate += ", ";
 		}
 		translate += "-";

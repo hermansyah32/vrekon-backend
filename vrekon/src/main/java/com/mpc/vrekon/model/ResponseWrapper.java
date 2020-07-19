@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ResponseWrapper<T> {
-    private Integer code;
+    private String code;
     private String message;
     private T dataDetail;
     private String timeStamp;
@@ -25,11 +25,11 @@ public class ResponseWrapper<T> {
         this.timeStamp = new SimpleDateFormat("yyyy-M-dd hh:mm:ss").format(new Date());
     }
 
-    public Integer getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(String code) {
         this.code = code;
         log.debug("Response Wrapper: code => " + this.code);
     }

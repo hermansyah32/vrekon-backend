@@ -10,17 +10,17 @@ public class SourceTranslate {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-    private Integer id_source_config;
-    private String original_field_name;
-    private String temporary_field_name;
+    private Integer idSourceConfig;
+    private String originalFieldName;
+    private String temporaryFieldName;
 
     public SourceTranslate() {
     }
 
-    public SourceTranslate(Integer id_source_config, String original_field_name, String temporary_field_name) {
-        this.id_source_config = id_source_config;
-        this.original_field_name = original_field_name;
-        this.temporary_field_name = temporary_field_name;
+    public SourceTranslate(Integer idSourceConfig, String originalFieldName, String temporaryFieldName) {
+        this.idSourceConfig = idSourceConfig;
+        this.originalFieldName = originalFieldName;
+        this.temporaryFieldName = temporaryFieldName;
     }
 
     public Integer getId() {
@@ -31,37 +31,37 @@ public class SourceTranslate {
         this.id = id;
     }
 
-    public Integer getId_source_config() {
-        return id_source_config;
+    public Integer getIdSourceConfig() {
+        return idSourceConfig;
     }
 
-    public void setId_source_config(Integer id_source_config) {
-        this.id_source_config = id_source_config;
+    public void setIdSourceConfig(Integer idSourceConfig) {
+        this.idSourceConfig = idSourceConfig;
     }
 
-    public String getOriginal_field_name() {
-        return original_field_name;
+    public String getOriginalFieldName() {
+        return originalFieldName;
     }
 
-    public void setOriginal_field_name(String original_field_name) {
-        this.original_field_name = original_field_name;
+    public void setOriginalFieldName(String originalFieldName) {
+        this.originalFieldName = originalFieldName;
     }
 
-    public String getTemporary_field_name() {
-        return temporary_field_name;
+    public String getTemporaryFieldName() {
+        return temporaryFieldName;
     }
 
-    public void setTemporary_field_name(String temporary_field_name) {
-        this.temporary_field_name = temporary_field_name;
+    public void setTemporaryFieldName(String temporaryFieldName) {
+        this.temporaryFieldName = temporaryFieldName;
     }
 
     @Override
     public String toString() {
         return "SourceTranslate{" +
                 "id=" + id +
-                ", id_source_config=" + id_source_config +
-                ", original_field_name='" + original_field_name + '\'' +
-                ", temporary_field_name='" + temporary_field_name + '\'' +
+                ", idSourceConfig=" + idSourceConfig +
+                ", originalFieldName='" + originalFieldName + '\'' +
+                ", temporaryFieldName='" + temporaryFieldName + '\'' +
                 '}';
     }
 }

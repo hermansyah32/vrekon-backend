@@ -149,12 +149,14 @@ public class SourceConfigServiceImpl implements SourceConfigService {
                         if (record != null){
                             temporarySession.beginTransaction();
                             temporaryTable.translateField(temporaryFieldName, originalFieldName, record);
+                            log.debug("TEST");
+                            log.debug(new Gson().toJson(temporaryTable));
                             temporarySession.save(temporaryTable);
                         }
                     }
                 }
                 //update application temporary table name
-                application.setTemporary_tabel(application.getId());
+                application.setTemporaryTabel(application.getId());
                 applicationRepository.save(application);
             }
             else {
@@ -253,7 +255,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
             return responseWrapper;
         }catch (Exception e){
             e.printStackTrace();
-            if (sourceConfig == null)
+            if (sourceConfig != null)
                 sourceConfigRepository.delete(sourceConfig);
             responseWrapper = new ResponseWrapper<String>();
             responseWrapper.systemError(e.getMessage());

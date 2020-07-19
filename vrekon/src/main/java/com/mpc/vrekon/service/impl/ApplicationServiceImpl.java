@@ -1,5 +1,6 @@
 package com.mpc.vrekon.service.impl;
 
+import com.google.gson.Gson;
 import com.mpc.vrekon.model.Application;
 import com.mpc.vrekon.util.ResponseCode;
 import com.mpc.vrekon.model.ResponseWrapper;
@@ -31,7 +32,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     public ResponseWrapper application(HttpServletRequest servletRequest) {
         try {
-            responseWrapper = new ResponseWrapper<List<Application>>(ResponseCode.OK, applicationRepository.findAll());
+            List<Application> applications = applicationRepository.findAll();
+            log.debug(new Gson().toJson(applications.get(0)));
+            responseWrapper = new ResponseWrapper<>(ResponseCode.OK, applications);
             return responseWrapper;
         }catch (Exception e) {
             e.printStackTrace();
@@ -92,8 +95,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             Application application = applicationRepository.findOne(Integer.valueOf(request.get("id").toString()));
             if (application == null)
                 throw new EntityNotFoundException("No data with ID: " + request.get("id").toString());
-            application.setTemporary_tabel(Integer.valueOf(request.get("temporaryTable").toString()));
-            application.setApplication_name(request.get("applicationName").toString());
+            application.setTemporaryTabel(Integer.valueOf(request.get("temporaryTable").toString()));
+            application.setApplicationName(request.get("applicationName").toString());
             applicationRepository.save(application);
             responseWrapper = new ResponseWrapper<List<String>>(ResponseCode.OK, new ArrayList<String>());
             return responseWrapper;

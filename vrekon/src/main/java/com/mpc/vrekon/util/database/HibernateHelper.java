@@ -1,6 +1,6 @@
 package com.mpc.vrekon.util.database;
 
-import com.mpc.vrekon.util.TemporaryTable;
+import com.mpc.vrekon.model.TemporaryTable;
 import com.mpc.vrekon.util.database.connection.HibernateConfig;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

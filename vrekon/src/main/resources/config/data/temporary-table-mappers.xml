@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mpc.vrekon.model.TemporaryTable">
+
+    <resultMap id="StudentInfoResultMap" type="Students">
+        <id property="id" column="STUDENTS_PK" />
+        <result property="name" column="NAME" />
+        <result property="enrollmentNumber" column="ENROLLMENT_NUMBER" />
+    </resultMap>
+
+    <select id="getName" parameterType="StudentInfo" resultMap="StudentInfoResultMap">
+        select * from STUDENTS where ENROLLMENT_NUMBER = (#{enrollmentNumber})
+    </select>
+</mapper>

@@ -9,22 +9,22 @@ public class Application {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-    private Integer temporary_tabel;
-    private String application_name;
+    private Integer temporaryTabel;
+    private String applicationName;
 
     public Application() {
     }
 
-    public Application(Integer temporary_tabel, String application_name) {
-        this.temporary_tabel = temporary_tabel;
-        this.application_name = application_name;
+    public Application(Integer temporaryTabel, String applicationName) {
+        this.temporaryTabel = temporaryTabel;
+        this.applicationName = applicationName;
     }
 
-    public Application(Integer id, Integer temporary_tabel, String application_name) {
+    public Application(Integer id, Integer temporaryTabel, String applicationName) {
         // this constuctor used for edit
         this.id = id;
-        this.temporary_tabel = temporary_tabel;
-        this.application_name = application_name;
+        this.temporaryTabel = temporaryTabel;
+        this.applicationName = applicationName;
     }
 
     public Integer getId() {
@@ -35,28 +35,28 @@ public class Application {
         this.id = id;
     }
 
-    public Integer getTemporary_tabel() {
-        return temporary_tabel;
+    public Integer getTemporaryTabel() {
+        return temporaryTabel;
     }
 
-    public void setTemporary_tabel(Integer temporary_tabel) {
-        this.temporary_tabel = temporary_tabel;
+    public void setTemporaryTabel(Integer temporaryTabel) {
+        this.temporaryTabel = temporaryTabel;
     }
 
-    public String getApplication_name() {
-        return application_name;
+    public String getApplicationName() {
+        return applicationName;
     }
 
-    public void setApplication_name(String application_name) {
-        this.application_name = application_name;
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
     }
 
     @Override
     public String toString() {
         return "Application{" +
                 "id=" + id +
-                ", temporary_tabel=" + temporary_tabel +
-                ", application_name='" + application_name + '\'' +
+                ", temporaryTabel=" + temporaryTabel +
+                ", applicationName='" + applicationName + '\'' +
                 '}';
     }
 }
