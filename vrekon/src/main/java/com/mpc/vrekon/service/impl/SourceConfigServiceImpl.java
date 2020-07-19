@@ -1,20 +1,20 @@
 package com.mpc.vrekon.service.impl;
 
-import com.google.gson.Gson;
 import com.mpc.vrekon.model.*;
 import com.mpc.vrekon.repository.ApplicationRepository;
 import com.mpc.vrekon.repository.SourceConfigRepository;
 import com.mpc.vrekon.repository.SourceTranslateRepository;
 import com.mpc.vrekon.service.SourceConfigService;
-import com.mpc.vrekon.util.*;
+import com.mpc.vrekon.util.ResponseCode;
+import com.mpc.vrekon.util.UploadFileMessageWrapper;
+import com.mpc.vrekon.util.UtilHelper;
 import com.mpc.vrekon.util.database.HibernateHelper;
+import com.mpc.vrekon.util.database.TemporaryTableGenerator;
 import com.mpc.vrekon.util.database.connection.HibernateConfig;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -31,7 +31,10 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -50,14 +53,14 @@ public class SourceConfigServiceImpl implements SourceConfigService {
     Logger log = Logger.getLogger(getClass());
     ResponseWrapper responseWrapper;
 
-    // TODO : add source translate to response
     public ResponseWrapper sourceConfigGetByID(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
             SourceConfig sourceConfig = sourceConfigRepository.findOne(Integer.valueOf(request.get("id").toString()));
             if (sourceConfig == null)
                 throw new EntityNotFoundException("No data with data ID: " + request.get("idApplication").toString());
-
-            responseWrapper = new ResponseWrapper<SourceConfig>(ResponseCode.OK, sourceConfig);
+            List<SourceTranslate> sourceTranslates = sourceTranslateRepository.findByIdSourceConfig(sourceConfig.getId());
+            sourceConfig.addToMap("sourceTranslate", sourceTranslates);
+            responseWrapper = new ResponseWrapper<>(ResponseCode.OK, sourceConfig.toHashMap());
             return responseWrapper;
         }catch (Exception e) {
             e.printStackTrace();
@@ -72,7 +75,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
      * @serialData sourceType: mysql, oracle, files(used for upload file)
      * @serialData add table name to request
      */
-    // TODO: test add source config from DB
+    // TODO: add source config finish except add from files (excel and txt)
     public ResponseWrapper sourceConfigAdd(HttpServletRequest servletRequest, Map<String, Object> request, MultipartFile[] files, HttpSession httpSession) {
         SourceConfig sourceConfig = null;
         StringBuilder allFileNameSkiped = new StringBuilder();
@@ -100,12 +103,13 @@ public class SourceConfigServiceImpl implements SourceConfigService {
 
                 //create source translate
                 //delimiter for field array is "," (comma)
-                String[] originalFieldName =request.get("originalFieldName").toString().split(",");
-                String[] temporaryFieldName =request.get("temporaryFieldName").toString().split(",");
+                //TODO : prevent multiple sourceTranslate (later)
+                String[] originalFieldName = StringUtils.deleteWhitespace(request.get("originalFieldName").toString()).split(",");
+                String[] temporaryFieldName =StringUtils.deleteWhitespace(request.get("temporaryFieldName").toString()).split(",");
                 if (originalFieldName.length == temporaryFieldName.length){
                     for (int fieldIndex = 0; fieldIndex < originalFieldName.length; fieldIndex++) {
                         SourceTranslate sourceTranslate = new SourceTranslate(sourceConfig.getId(),originalFieldName[fieldIndex], temporaryFieldName[fieldIndex]);
-                        sourceTranslateRepository.save(sourceTranslate);
+                        sourceTranslateRepository.saveAndFlush(sourceTranslate);
                     }
                 }else {
                     throw new Exception("original field and temporary field have different field length");
@@ -114,11 +118,11 @@ public class SourceConfigServiceImpl implements SourceConfigService {
                 //create temporary table and synchronize data
                 //temporarySession for temporary table
                 //sourceSession for target table
-                TemporaryTable temporaryTable = new TemporaryTable();
-                temporaryTable.tableName("temporary"+application.getId());
                 SessionFactory temporaryFactory = HibernateHelper.getSessionFactory(
-                        new AnnotationConfiguration().configure(context.getResource("classpath:config/data/hibernate-config.xml").getFile()).setNamingStrategy(temporaryTable));
+                        new AnnotationConfiguration().configure(context.getResource("classpath:config/data/hibernate-config.xml").getFile()));
                 Session temporarySession = temporaryFactory.openSession();
+                TemporaryTableGenerator temporaryTableGenerator = new TemporaryTableGenerator(context, temporarySession);
+                temporaryTableGenerator.generateTable("temporary" + application.getId());
                 SessionFactory sessionFactory;
                 Session sourceSession;
                 Integer sourceRowCount;
@@ -128,30 +132,33 @@ public class SourceConfigServiceImpl implements SourceConfigService {
 
                 //start to copy data
                 if (sourceSession != null){
-                    sourceSession.beginTransaction();
-                    log.debug(new Gson().toJson(sourceConfig));
+                    Transaction sourceTransaction;
                     SQLQuery query = sourceSession.createSQLQuery("SELECT COUNT(*) FROM " + sourceConfig.getTableName());
                     sourceRowCount = ((BigInteger) query.uniqueResult()).intValue();
                     Map record = null;
                     for (int row = 0; row < sourceRowCount; row++) {
                         if (sourceConfig.getSourceType().equals("mysql")){
+                            sourceTransaction = sourceSession.beginTransaction();
                             query = sourceSession.createSQLQuery("SELECT "+ UtilHelper.arrayToString(originalFieldName) +" FROM " + sourceConfig.getTableName() +" LIMIT 1 OFFSET "+ row);
                             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
                             record = (Map) query.list().get(0);
+                            sourceTransaction.commit();
                         }
 
                         if (sourceConfig.getSourceType().equals("oracle")){
+                            sourceTransaction = sourceSession.beginTransaction();
                             query = sourceSession.createSQLQuery("SELECT "+ UtilHelper.arrayToString(originalFieldName) +" FROM (SELECT ROWNUM RNUM, A.* FROM "+ sourceConfig.getTableName() +" A WHERE ROWNUM <= "+ (row + 1) +") WHERE RNUM >="+ (row + 1));
                             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
                             record = (Map) query.list().get(0);
+                            sourceTransaction.commit();
                         }
 
                         if (record != null){
-                            temporarySession.beginTransaction();
-                            temporaryTable.translateField(temporaryFieldName, originalFieldName, record);
-                            log.debug("TEST");
-                            log.debug(new Gson().toJson(temporaryTable));
-                            temporarySession.save(temporaryTable);
+                            Transaction temporaryTransaction = temporarySession.beginTransaction();
+                            TemporaryTable temporaryTable = new TemporaryTable();
+                            temporaryTable.translateField("temporary" + application.getId(), temporaryFieldName, originalFieldName, record, false);
+                            temporarySession.createSQLQuery(temporaryTable.getNativeSQL()).executeUpdate();
+                            temporaryTransaction.commit();
                         }
                     }
                 }
@@ -242,16 +249,8 @@ public class SourceConfigServiceImpl implements SourceConfigService {
                             ResponseCode.OK,
                             new UploadFileMessageWrapper("Success upload all files", true, ""));
                 }
-
-                //create temporary table
-                TemporaryTable temporaryTable = new TemporaryTable();
-                temporaryTable.tableName("temporary"+application.getId());
-                SessionFactory temporaryFactory = HibernateHelper.getSessionFactory(
-                        new AnnotationConfiguration().configure("classpath:config/data/hibernate-config.xml")
-                                .setNamingStrategy(temporaryTable));
-                Session temporarySession = temporaryFactory.openSession();
             }
-
+            responseWrapper = new ResponseWrapper<>(ResponseCode.OK, new ArrayList<>());
             return responseWrapper;
         }catch (Exception e){
             e.printStackTrace();
@@ -406,11 +405,18 @@ public class SourceConfigServiceImpl implements SourceConfigService {
     // TODO: add more detail to response
     public ResponseWrapper sourceConfigGetByApplicationDetail(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
-            List<SourceConfig> sourceConfig = sourceConfigRepository.findByIdApplication(Integer.valueOf(request.get("idApplication").toString()));
-            if (sourceConfig.isEmpty())
+            List<SourceConfig> sourceConfigs = sourceConfigRepository.findByIdApplication(Integer.valueOf(request.get("idApplication").toString()));
+            if (sourceConfigs.isEmpty())
                 throw new EntityNotFoundException("No data with Application ID: " + request.get("idApplication").toString());
 
-            responseWrapper = new ResponseWrapper<>(ResponseCode.OK, sourceConfig);
+            List<Map<String, Object>> sourceConfigMap = new ArrayList<>();
+            for(SourceConfig sourceConfig: sourceConfigs){
+                List<SourceTranslate> sourceTranslates = sourceTranslateRepository.findByIdSourceConfig(sourceConfig.getId());
+                sourceConfig.addToMap("sourceTranslate", sourceTranslates);
+                sourceConfigMap.add(sourceConfig.toHashMap());
+            }
+
+            responseWrapper = new ResponseWrapper<>(ResponseCode.OK, sourceConfigMap);
             return responseWrapper;
         }catch (Exception e) {
             e.printStackTrace();

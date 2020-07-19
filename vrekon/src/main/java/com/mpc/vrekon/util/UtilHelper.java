@@ -17,6 +17,30 @@ public class UtilHelper {
 		return Arrays.toString(strings).replace("[", "").replace("]", "");
 	}
 
+	public static String arrayToStringDoubleQuote(String[] strings){
+		String result = "";
+		for (int index = 0; index < strings.length; index++) {
+			if (index != (strings.length -1)){
+				result += "\"" + strings[index] + "\", ";
+			}else {
+				result += "\"" + strings[index] + "\"";
+			}
+		}
+		return result;
+	}
+
+	public static String arrayToStringBacktick(String[] strings){
+		String result = "";
+		for (int index = 0; index < strings.length; index++) {
+			if (index != (strings.length -1)){
+				result += "`" + strings[index] + "`, ";
+			}else {
+				result += "`" + strings[index] + "`";
+			}
+		}
+		return result;
+	}
+
 	public static Date convertStringToDate(String dateString, String format){
 		DateFormat dateFormat = new SimpleDateFormat(format);
 		try {

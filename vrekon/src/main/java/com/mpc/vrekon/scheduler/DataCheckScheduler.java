@@ -1,17 +1,14 @@
 package com.mpc.vrekon.scheduler;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import com.mpc.vrekon.model.SourceConfig;
 import com.mpc.vrekon.repository.SourceConfigRepository;
 import com.mpc.vrekon.service.SourceConfigService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import com.mpc.vrekon.util.UtilHelper;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 public class DataCheckScheduler{
 	

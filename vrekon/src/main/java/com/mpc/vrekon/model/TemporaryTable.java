@@ -1,104 +1,62 @@
 package com.mpc.vrekon.model;
 
 import com.mpc.vrekon.util.UtilHelper;
-import org.apache.log4j.Logger;
-import org.hibernate.cfg.DefaultNamingStrategy;
 
-import javax.persistence.*;
-import java.lang.reflect.Field;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 import java.util.Map;
 
-@Entity
-public class TemporaryTable extends DefaultNamingStrategy {
+public class TemporaryTable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-    @Column(nullable = true)
     private String acquirer;
-    @Column(nullable = true)
     private String issuer;
-    @Column(nullable = true)
     private String transferee;
-    @Column(nullable = true)
     private String originator;
-    @Column(nullable = true)
     private Integer txnSrc;
-    @Column(nullable = true)
     private Integer txnDest;
-    @Column(nullable = true)
     private String alternateAcquirer;
-    @Column(nullable = true)
     private String product;
-    @Column(nullable = true)
     private String invoiceNumber;
-    @Column(nullable = true)
     private Integer respCode;
-    @Column(nullable = true)
     private Integer reasonCode;
-    @Column(nullable = true)
     private String revCode;
-    @Column(nullable = true)
     private String origMsg;
-    @Column(nullable = true)
     private Date origDate;
-    @Column(nullable = true)
     private Date origTime;
-    @Column(nullable = true)
     private String merchantType;
-    @Column(nullable = true)
     private String acqCountry;
-    @Column(nullable = true)
     private String refnum;
-    @Column(nullable = true)
     private String termId;
-    @Column(nullable = true)
     private String termLoc;
-    @Column(nullable = true)
     private String account1;
-    @Column(nullable = true)
     private String account2;
-    @Column(nullable = true)
     private String account3;
-    @Column(nullable = true)
     private String branch;
-    @Column(nullable = true)
     private String supervisor;
-    @Column(nullable = true)
     private String terminalTrace;
-    @Column(nullable = true)
     private String batchId;
-    @Column(nullable = true)
     private String data1;
-    @Column(nullable = true)
     private String data2;
-    @Column(nullable = true)
     private String data3;
-    @Column(nullable = true)
     private String data4;
-    @Column(nullable = true)
     private String issuerData;
-    @Column(nullable = true)
     private String acquirerData;
-    @Column(nullable = true)
     private String availBalance;
-    @Column(nullable = true)
-    private String currencyCode = "ID";
-    @Column(nullable = true)
+    private String currencyCode;
     private double txnFee;
-    @Column(nullable = true)
     private double deviceFee;
-    @Column(nullable = true)
     private String node;
-    @Column(nullable = true)
     private String version;
-    @Column(nullable = true)
     private Integer trace;
-    @Column(nullable = true)
     private Date locDate;
-    @Column(nullable = true)
     private Date locTime;
+
+    private String nativeSQL;
 
     public Integer getId() {
         return id;
@@ -444,38 +402,119 @@ public class TemporaryTable extends DefaultNamingStrategy {
         this.locTime = locTime;
     }
 
-    public void translateField(String[] temporaryField, String[] originalField, Map<String, Object> sourceRecord){
+    public String getNativeSQL() {
+        return nativeSQL;
+    }
+
+    public void translateField(String tableName, String[] temporaryField, String[] originalField, Map<String, Object> sourceRecord, boolean isUpdate){
+        if (isUpdate)
+            nativeSQL = "UPDATE `"+tableName+"` SET ";
+        else
+            nativeSQL = "INSERT INTO `"+tableName+"` ";
         try {
-            Field[] fields = this.getClass().getDeclaredFields();
+            String[] recordValues = new String[temporaryField.length];
             for (int indexField = 0; indexField < temporaryField.length; indexField++) {
-                if(sourceRecord.containsKey(originalField[indexField])){
-                    for(Field field: fields){
-                        field.setAccessible(true);
-                        String fieldDataType = field.getType().getSimpleName();
-                        if (field.getName().equals(temporaryField[indexField])){
-                            if (fieldDataType.equals("String")){
-                                field.set(this, sourceRecord.get(originalField[indexField]).toString());
-                            }
+                String tempField = temporaryField[indexField];
+                recordValues[indexField] = sourceRecord.get(originalField[indexField]).toString();
+                if (tempField.equals("acquirer"))
+                    setAcquirer(recordValues[indexField]);
+                if (tempField.equals("issuer"))
+                    setIssuer(recordValues[indexField]);
+                if (tempField.equals("transefree"))
+                    setTransferee(recordValues[indexField]);
+                if (tempField.equals("originator"))
+                    setOriginator(recordValues[indexField]);
+                if (tempField.equals("txnSrc"))
+                    setTxnSrc(Integer.valueOf(recordValues[indexField]));
+                if (tempField.equals("txnDest"))
+                    setTxnDest(Integer.valueOf(recordValues[indexField]));
+                if (tempField.equals("alternateAcquirer"))
+                    setAlternateAcquirer(recordValues[indexField]);
+                if (tempField.equals("product"))
+                    setProduct(recordValues[indexField]);
+                if (tempField.equals("invoiceNumber"))
+                    setInvoiceNumber(recordValues[indexField]);
+                if (tempField.equals("respCode"))
+                    setRespCode(Integer.valueOf(recordValues[indexField]));
+                if (tempField.equals("reasonCode"))
+                    setReasonCode(Integer.valueOf(recordValues[indexField]));
+                if (tempField.equals("revCode"))
+                    setRevCode(recordValues[indexField]);
+                if (tempField.equals("origMsg"))
+                    setOrigMsg(recordValues[indexField]);
+                if (tempField.equals("origDate"))
+                    setOrigDate(UtilHelper.convertStringToDate(recordValues[indexField]));
+                if (tempField.equals("origTime"))
+                    setOrigTime(UtilHelper.convertStringToDate(recordValues[indexField]));
+                if (tempField.equals("merchantType"))
+                    setMerchantType(recordValues[indexField]);
+                if (tempField.equals("acqCountry"))
+                    setAcqCountry(recordValues[indexField]);
+                if (tempField.equals("refnum"))
+                    setRefnum(recordValues[indexField]);
+                if (tempField.equals("termId"))
+                    setTermId(recordValues[indexField]);
+                if (tempField.equals("termLoc"))
+                    setTermLoc(recordValues[indexField]);
+                if (tempField.equals("account1"))
+                    setAccount1(recordValues[indexField]);
+                if (tempField.equals("account2"))
+                    setAccount2(recordValues[indexField]);
+                if (tempField.equals("account3"))
+                    setAccount3(recordValues[indexField]);
+                if (tempField.equals("branch"))
+                    setBranch(recordValues[indexField]);
+                if (tempField.equals("supervisor"))
+                    setSupervisor(recordValues[indexField]);
+                if (tempField.equals("terminalTrace"))
+                    setTerminalTrace(recordValues[indexField]);
+                if (tempField.equals("batchId"))
+                    setBatchId(recordValues[indexField]);
+                if (tempField.equals("data1"))
+                    setData1(recordValues[indexField]);
+                if (tempField.equals("data2"))
+                    setData2(recordValues[indexField]);
+                if (tempField.equals("data3"))
+                    setData3(recordValues[indexField]);
+                if (tempField.equals("data4"))
+                    setData4(recordValues[indexField]);
+                if (tempField.equals("issuerData"))
+                    setIssuerData(recordValues[indexField]);
+                if (tempField.equals("acquirerData"))
+                    setAcquirerData(recordValues[indexField]);
+                if (tempField.equals("availBalance"))
+                    setAvailBalance(recordValues[indexField]);
+                if (tempField.equals("currencyCode "))
+                    setCurrencyCode(recordValues[indexField]);
+                if (tempField.equals("txnFee"))
+                    setTxnFee(Double.parseDouble(recordValues[indexField]));
+                if (tempField.equals("deviceFee"))
+                    setDeviceFee(Double.parseDouble(recordValues[indexField]));
+                if (tempField.equals("node"))
+                    setNode(recordValues[indexField]);
+                if (tempField.equals("version"))
+                    setVersion(recordValues[indexField]);
+                if (tempField.equals("trace"))
+                    setTrace(Integer.parseInt(recordValues[indexField]));
+                if (tempField.equals("locDate"))
+                    setLocDate(UtilHelper.convertStringToDate(recordValues[indexField]));
+                if (tempField.equals("locTime"))
+                    setLocTime(UtilHelper.convertStringToDate(recordValues[indexField]));
 
-                            if (fieldDataType.equals("double")){
-                                field.set(this, Double.valueOf(sourceRecord.get(originalField[indexField]).toString()));
-                            }
-
-                            if (fieldDataType.equals("Integer")){
-                                field.set(this, Integer.valueOf(sourceRecord.get(originalField[indexField]).toString()));
-                            }
-
-                            if (fieldDataType.equals("Date")){
-                                field.set(this, UtilHelper.convertStringToDate(sourceRecord.get(originalField[indexField]).toString()));
-                            }
-                        }
-                    }
+                if (isUpdate){
+                    nativeSQL += "`" + tempField + "` = " + recordValues[indexField];
+                    if (indexField != temporaryField.length - 1)
+                        nativeSQL += ",";
+                    else
+                        nativeSQL += " WHERE id = " + getId();
                 }
-
+            }
+            if (!isUpdate){
+                nativeSQL += "("+UtilHelper.arrayToStringBacktick(temporaryField)+") VALUES " +
+                        "("+UtilHelper.arrayToStringDoubleQuote(recordValues)+")";
             }
         } catch (Exception e) {
             e.printStackTrace();
-
         }
     }
 

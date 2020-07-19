@@ -1,9 +1,12 @@
 package com.mpc.vrekon.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.google.gson.Gson;
+import org.apache.log4j.Logger;
+
+import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
+
 @Entity
 public class Application {
     @Id
@@ -11,6 +14,9 @@ public class Application {
     private Integer id;
     private Integer temporaryTabel;
     private String applicationName;
+
+    @Transient
+    private Map<String, Object> mapField = null;
 
     public Application() {
     }
@@ -49,6 +55,25 @@ public class Application {
 
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName;
+    }
+
+    public void addToMap(String key, Object value){
+        if (mapField==null){
+            toHashMap();
+        }
+        mapField.put(key, value);
+        Logger log = Logger.getLogger(getClass());
+        log.debug("addToMap: " + new Gson().toJson(mapField));
+    }
+
+    public Map<String, Object> toHashMap(){
+        if (mapField==null){
+            mapField = new HashMap<>();
+            mapField.put("id", id);
+            mapField.put("temporaryTabel", temporaryTabel);
+            mapField.put("applicationName", applicationName);
+        }
+        return mapField;
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.mpc.vrekon.model;
 
 import javax.persistence.*;
-import javax.xml.transform.Source;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 public class SourceConfig {
@@ -19,6 +20,9 @@ public class SourceConfig {
     private String fileNames;
     private String tableName;
     private String lastUpdate;
+
+    @Transient
+    Map<String, Object> mapField = null;
 
     public SourceConfig(){
 
@@ -124,6 +128,30 @@ public class SourceConfig {
 
     public void setLastUpdate(String lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public void addToMap(String key, Object value){
+        if (mapField==null){
+            this.toHashMap();
+        }
+        this.mapField.put(key, value);
+    }
+
+    public Map<String, Object> toHashMap(){
+        if (mapField==null){
+            mapField = new HashMap<>();
+            mapField.put("id", id);
+            mapField.put("idApplication", idApplication);
+            mapField.put("dbHost", dbHost);
+            mapField.put("dbPort", dbPort);
+            mapField.put("dbName", dbName);
+            mapField.put("dbUsername", dbUsername);
+            mapField.put("dbPassword", dbPassword);
+            mapField.put("fileNames", fileNames);
+            mapField.put("tableName", tableName);
+            mapField.put("lastUpdate", lastUpdate);
+        }
+        return mapField;
     }
 
     @Override

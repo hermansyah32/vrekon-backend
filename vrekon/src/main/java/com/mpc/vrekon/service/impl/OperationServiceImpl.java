@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +37,7 @@ public class OperationServiceImpl implements OperationService {
     Logger log = Logger.getLogger(getClass());
     ResponseWrapper responseWrapper;
 
+    // TODO: not done yet
     public ResponseWrapper manualSyncron(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
             log.debug(request.get("id").toString());
@@ -55,7 +55,7 @@ public class OperationServiceImpl implements OperationService {
         }
     }
 
-    @Override
+    // TODO: not done yet
     public ResponseWrapper importFile(HttpServletRequest servletRequest, Map<String, Object> request, MultipartFile[] files, HttpSession httpSession) {
         SourceConfig sourceConfig;
         StringBuilder allFileNameSkiped = new StringBuilder();
@@ -123,6 +123,7 @@ public class OperationServiceImpl implements OperationService {
         }
     }
 
+    // TODO: not done yet
     public ResponseWrapper compareApplication(HttpServletRequest servletRequest, Map<String, Object> request) {
         return null;
     }

@@ -1,11 +1,11 @@
 package com.mpc.vrekon.util.database;
 
-import java.sql.*;
-import java.util.List;
-
 import com.mpc.vrekon.model.SourceConfig;
 import com.mpc.vrekon.model.SourceTranslate;
 import org.apache.log4j.Logger;
+
+import java.sql.*;
+import java.util.List;
 public class ConnectionHelper {
 	private SourceConfig sourceConfig = null;
 	private Logger log = Logger.getLogger(getClass());

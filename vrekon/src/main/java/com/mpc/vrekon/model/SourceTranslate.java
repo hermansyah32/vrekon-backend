@@ -1,9 +1,8 @@
 package com.mpc.vrekon.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 public class SourceTranslate {
@@ -13,6 +12,9 @@ public class SourceTranslate {
     private Integer idSourceConfig;
     private String originalFieldName;
     private String temporaryFieldName;
+
+    @Transient
+    private Map<String, Object> mapField = null;
 
     public SourceTranslate() {
     }
@@ -53,6 +55,24 @@ public class SourceTranslate {
 
     public void setTemporaryFieldName(String temporaryFieldName) {
         this.temporaryFieldName = temporaryFieldName;
+    }
+
+    public void addToMap(String key, Object value){
+        if (mapField==null){
+            this.toHashMap();
+        }
+        this.mapField.put(key, value);
+    }
+
+    public Map<String, Object> toHashMap(){
+        if (mapField==null){
+            mapField = new HashMap<>();
+            mapField.put("id", id);
+            mapField.put("idSourceConfig", idSourceConfig);
+            mapField.put("originalFieldName", originalFieldName);
+            mapField.put("temporaryFieldName", temporaryFieldName);
+        }
+        return mapField;
     }
 
     @Override

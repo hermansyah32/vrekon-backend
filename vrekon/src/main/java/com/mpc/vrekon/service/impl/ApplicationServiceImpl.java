@@ -2,10 +2,14 @@ package com.mpc.vrekon.service.impl;
 
 import com.google.gson.Gson;
 import com.mpc.vrekon.model.Application;
-import com.mpc.vrekon.util.ResponseCode;
 import com.mpc.vrekon.model.ResponseWrapper;
+import com.mpc.vrekon.model.SourceConfig;
+import com.mpc.vrekon.model.SourceTranslate;
 import com.mpc.vrekon.repository.ApplicationRepository;
+import com.mpc.vrekon.repository.SourceConfigRepository;
+import com.mpc.vrekon.repository.SourceTranslateRepository;
 import com.mpc.vrekon.service.ApplicationService;
+import com.mpc.vrekon.util.ResponseCode;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,10 @@ import java.util.Map;
 public class ApplicationServiceImpl implements ApplicationService {
     @Autowired
     ApplicationRepository applicationRepository;
+    @Autowired
+    SourceConfigRepository sourceConfigRepository;
+    @Autowired
+    SourceTranslateRepository sourceTranslateRepository;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -47,7 +55,20 @@ public class ApplicationServiceImpl implements ApplicationService {
     // TODO: Mengambil semua data beserta source config dan source translatenya
     public ResponseWrapper applicationGetDetail(HttpServletRequest servletRequest) {
         try {
-            responseWrapper = new ResponseWrapper<List<Application>>(ResponseCode.OK, applicationRepository.findAll());
+            List<Application> applications = applicationRepository.findAll();
+            List<Map<String, Object>> applicationDetails = new ArrayList<>();
+            for(Application application: applications){
+                List<SourceConfig> sourceConfigs =sourceConfigRepository.findByIdApplication(application.getId());
+                List<Map<String, Object>> sourceConfigsMap = new ArrayList<>();
+                for(SourceConfig sourceConfig: sourceConfigs){
+                    List<SourceTranslate> sourceTranslates = sourceTranslateRepository.findByIdSourceConfig(sourceConfig.getId());
+                    sourceConfig.addToMap("sourceTranslate", sourceTranslates);
+                    sourceConfigsMap.add(sourceConfig.toHashMap());
+                }
+                application.addToMap("sourceConfig", sourceConfigsMap);
+                applicationDetails.add(application.toHashMap());
+            }
+            responseWrapper = new ResponseWrapper<>(ResponseCode.OK, applicationDetails);
             return responseWrapper;
         }catch (Exception e) {
             e.printStackTrace();
@@ -63,7 +84,15 @@ public class ApplicationServiceImpl implements ApplicationService {
             Application application = applicationRepository.findOne(Integer.valueOf(request.get("id").toString()));
             if (application == null)
                 throw new EntityNotFoundException("No data with ID: " + request.get("id").toString());
-            responseWrapper = new ResponseWrapper<Application>(ResponseCode.OK, application);
+            List<SourceConfig> sourceConfigs =sourceConfigRepository.findByIdApplication(application.getId());
+            List<Map<String, Object>> sourceConfigsMap = new ArrayList<>();
+            for(SourceConfig sourceConfig: sourceConfigs){
+                List<SourceTranslate> sourceTranslates = sourceTranslateRepository.findByIdSourceConfig(sourceConfig.getId());
+                sourceConfig.addToMap("sourceTranslate", sourceTranslates);
+                sourceConfigsMap.add(sourceConfig.toHashMap());
+            }
+            application.addToMap("sourceConfig", sourceConfigsMap);
+            responseWrapper = new ResponseWrapper<>(ResponseCode.OK, application.toHashMap());
             return responseWrapper;
         }catch (Exception e) {
             e.printStackTrace();

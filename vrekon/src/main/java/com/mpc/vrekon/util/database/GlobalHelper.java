@@ -1,14 +1,14 @@
 package com.mpc.vrekon.util.database;
 
+import com.mpc.vrekon.model.SourceConfig;
+import org.apache.log4j.Logger;
+import org.springframework.util.ResourceUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import com.mpc.vrekon.model.SourceConfig;
-import org.apache.log4j.Logger;
-import org.springframework.util.ResourceUtils;
 
 
 public class GlobalHelper {	
