@@ -41,5 +41,6 @@ CREATE TABLE IF NOT EXISTS `{table_name}` (
   `txn_dest` int(11) DEFAULT NULL,
   `txn_fee` double NOT NULL,
   `txn_src` int(11) DEFAULT NULL,
-  `version` varchar(255) DEFAULT NULL
+  `version` varchar(255) DEFAULT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

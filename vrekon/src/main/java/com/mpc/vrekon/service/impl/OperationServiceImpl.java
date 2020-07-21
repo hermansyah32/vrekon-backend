@@ -4,13 +4,21 @@ import com.mpc.vrekon.model.ResponseWrapper;
 import com.mpc.vrekon.model.SourceConfig;
 import com.mpc.vrekon.repository.ApplicationRepository;
 import com.mpc.vrekon.repository.SourceConfigRepository;
+import com.mpc.vrekon.repository.SourceTranslateRepository;
 import com.mpc.vrekon.service.OperationService;
 import com.mpc.vrekon.util.ResponseCode;
 import com.mpc.vrekon.util.UploadFileMessageWrapper;
 import com.mpc.vrekon.util.UtilHelper;
+import com.mpc.vrekon.util.database.HibernateHelper;
+import com.mpc.vrekon.util.database.connection.HibernateConfig;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.AnnotationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -32,7 +37,11 @@ public class OperationServiceImpl implements OperationService {
     @Autowired
     SourceConfigRepository sourceConfigRepository;
     @Autowired
+    SourceTranslateRepository sourceTranslateRepository;
+    @Autowired
     ApplicationRepository applicationRepository;
+    @Autowired
+    private ApplicationContext context;
 
     Logger log = Logger.getLogger(getClass());
     ResponseWrapper responseWrapper;
@@ -123,8 +132,29 @@ public class OperationServiceImpl implements OperationService {
         }
     }
 
-    // TODO: not done yet
+    // TODO: need to check
+    // compare method if both temporary table has same result, then return match else unmatch
+    // @Question: is it reversible ? e.g. destinationTo in temporaryA is sourceFrom in temporaryB
     public ResponseWrapper compareApplication(HttpServletRequest servletRequest, Map<String, Object> request) {
-        return null;
+        Map<String, Object> resultMap = new HashMap<>();
+        try{
+            SessionFactory sessionFactory;
+            Session session;
+            HibernateConfig config = new HibernateConfig(new AnnotationConfiguration().configure(context.getResource("classpath:config/data/hibernate-config.xml").getFile()));
+            sessionFactory = HibernateHelper.getSessionFactory(config);
+            session = sessionFactory.openSession();
+            Transaction compareTransaction = session.beginTransaction();
+//            session.createSQLQuery()
+            return responseWrapper;
+        }catch (Exception e){
+            e.printStackTrace();
+            responseWrapper = new ResponseWrapper<String>();
+            responseWrapper.systemError(e.getMessage());
+            return responseWrapper;
+        }
+    }
+
+    public void compareQueryBuilder(String[] fieldMap){
+
     }
 }

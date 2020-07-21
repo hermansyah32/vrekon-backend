@@ -511,7 +511,7 @@ public class TemporaryTable {
             }
             if (!isUpdate){
                 nativeSQL += "("+UtilHelper.arrayToStringBacktick(temporaryField)+") VALUES " +
-                        "("+UtilHelper.arrayToStringDoubleQuote(recordValues)+")";
+                        "("+UtilHelper.arrayToStringQuery(recordValues)+")";
             }
         } catch (Exception e) {
             e.printStackTrace();

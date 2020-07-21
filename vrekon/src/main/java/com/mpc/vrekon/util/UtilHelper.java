@@ -17,6 +17,38 @@ public class UtilHelper {
 		return Arrays.toString(strings).replace("[", "").replace("]", "");
 	}
 
+	public static String arrayToStringQuery(String[] strings){
+		String result = "";
+		for (int index = 0; index < strings.length; index++) {
+			if (index != (strings.length -1)){
+				if (strings[index].contains(":")){
+					result += "'" + strings[index] + "', ";
+				}else {
+					result += "\"" + strings[index] + "\", ";
+				}
+			}else {
+				if (strings[index].contains(":")){
+					result += "'" + strings[index] + "'";
+				}else {
+					result += "\"" + strings[index] + "\"";
+				}
+			}
+		}
+		return result;
+	}
+
+	public static String arrayToStringSingleQuote(String[] strings){
+		String result = "";
+		for (int index = 0; index < strings.length; index++) {
+			if (index != (strings.length -1)){
+				result += "'" + strings[index] + "', ";
+			}else {
+				result += "'" + strings[index] + "'";
+			}
+		}
+		return result;
+	}
+
 	public static String arrayToStringDoubleQuote(String[] strings){
 		String result = "";
 		for (int index = 0; index < strings.length; index++) {
