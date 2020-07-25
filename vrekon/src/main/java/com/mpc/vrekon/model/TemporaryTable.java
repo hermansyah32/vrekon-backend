@@ -13,6 +13,7 @@ public class TemporaryTable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
+    private Integer idSourceConfig;
     private String acquirer;
     private String issuer;
     private String transferee;
@@ -64,6 +65,14 @@ public class TemporaryTable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdSourceConfig() {
+        return idSourceConfig;
+    }
+
+    public void setIdSourceConfig(Integer idSourceConfig) {
+        this.idSourceConfig = idSourceConfig;
     }
 
     public String getAcquirer() {
@@ -406,7 +415,7 @@ public class TemporaryTable {
         return nativeSQL;
     }
 
-    public void translateField(String tableName, String[] temporaryField, String[] originalField, Map<String, Object> sourceRecord, boolean isUpdate){
+    public void translateField(String tableName, Integer idSourceConfig,  String[] temporaryField, String[] originalField, Map<String, Object> sourceRecord, boolean isUpdate){
         if (isUpdate)
             nativeSQL = "UPDATE `"+tableName+"` SET ";
         else
@@ -502,6 +511,7 @@ public class TemporaryTable {
                     setLocTime(UtilHelper.convertStringToDate(recordValues[indexField]));
 
                 if (isUpdate){
+                    nativeSQL += "`id_source_config` = " + idSourceConfig;
                     nativeSQL += "`" + tempField + "` = " + recordValues[indexField];
                     if (indexField != temporaryField.length - 1)
                         nativeSQL += ",";
@@ -510,8 +520,8 @@ public class TemporaryTable {
                 }
             }
             if (!isUpdate){
-                nativeSQL += "("+UtilHelper.arrayToStringBacktick(temporaryField)+") VALUES " +
-                        "("+UtilHelper.arrayToStringQuery(recordValues)+")";
+                nativeSQL += "(`id_source_config`, "+UtilHelper.arrayToStringBacktick(temporaryField)+") VALUES " +
+                        "("+ idSourceConfig + "," +UtilHelper.arrayToStringQuery(recordValues)+")";
             }
         } catch (Exception e) {
             e.printStackTrace();

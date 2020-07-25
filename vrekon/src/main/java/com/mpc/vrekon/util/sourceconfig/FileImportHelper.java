@@ -3,8 +3,8 @@ package com.mpc.vrekon.util.sourceconfig;
 import com.google.gson.Gson;
 import com.mpc.vrekon.model.SourceConfig;
 import com.mpc.vrekon.model.SourceTranslate;
-import com.mpc.vrekon.util.sourceconfig.spreadsheet.SpreadSheetISheet;
-import com.mpc.vrekon.util.sourceconfig.spreadsheet.SpreadSheetWrapper;
+import com.mpc.vrekon.util.spreadsheet.SpreadSheetISheet;
+import com.mpc.vrekon.util.spreadsheet.SpreadSheetWrapper;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 

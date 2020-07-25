@@ -1,4 +1,4 @@
-package com.mpc.vrekon.util.sourceconfig.spreadsheet;
+package com.mpc.vrekon.util.spreadsheet;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;

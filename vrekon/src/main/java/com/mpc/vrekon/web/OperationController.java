@@ -35,7 +35,8 @@ public class OperationController {
 
     @RequestMapping(value="/compare-application", method= RequestMethod.POST)
     @ResponseBody
-    public ResponseWrapper compareApplication(HttpServletRequest servletRequest, @RequestBody Map<String, Object> request){
-        return operationService.compareApplication(servletRequest, request);
+    public ResponseWrapper compareApplication(HttpServletRequest servletRequest, @RequestBody Map<String, Object> request,
+                                              HttpSession httpSession){
+        return operationService.compareApplication(servletRequest, request, httpSession);
     }
 }

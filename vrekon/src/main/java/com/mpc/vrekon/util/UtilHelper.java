@@ -3,10 +3,7 @@ package com.mpc.vrekon.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class UtilHelper {
 
@@ -15,6 +12,17 @@ public class UtilHelper {
 
 	public static String arrayToString(String[] strings){
 		return Arrays.toString(strings).replace("[", "").replace("]", "");
+	}
+	public static String arrayToString(Map[] maps, String keyName, String prefix){
+		String result = "";
+		for (int index = 0; index < maps.length; index++) {
+			if (index != (maps.length -1)){
+				result += prefix + "." + maps[index].get(keyName) + ",";
+			}else {
+				result += prefix + "." + maps[index].get(keyName);
+			}
+		}
+		return result;
 	}
 
 	public static String arrayToStringQuery(String[] strings){
@@ -68,6 +76,30 @@ public class UtilHelper {
 				result += "`" + strings[index] + "`, ";
 			}else {
 				result += "`" + strings[index] + "`";
+			}
+		}
+		return result;
+	}
+
+	public static String arrayToStringBacktick(Map[] maps, String keyName){
+		String result = "";
+		for (int index = 0; index < maps.length; index++) {
+			if (index != (maps.length -1)){
+				result += "`" + maps[index].get(keyName) + "`, ";
+			}else {
+				result += "`" + maps[index].get(keyName) + "`";
+			}
+		}
+		return result;
+	}
+
+	public static String arrayToStringBacktick(Map[] maps, String keyName, String prefix){
+		String result = "";
+		for (int index = 0; index < maps.length; index++) {
+			if (index != (maps.length -1)){
+				result += "`" + prefix + "." + maps[index].get(keyName) + "`, ";
+			}else {
+				result += "`" + prefix + "." + maps[index].get(keyName) + "`";
 			}
 		}
 		return result;

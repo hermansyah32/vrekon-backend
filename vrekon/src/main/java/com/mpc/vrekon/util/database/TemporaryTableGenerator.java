@@ -13,6 +13,7 @@ public class TemporaryTableGenerator {
 
     String tableSQL = "CREATE TABLE IF NOT EXISTS `{table_name}` (\n" +
             "  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,\n" +
+            "  `id_source_config` int(11) NOT NULL, \n" +
             "  `account1` varchar(255) DEFAULT NULL,\n" +
             "  `account2` varchar(255) DEFAULT NULL,\n" +
             "  `account3` varchar(255) DEFAULT NULL,\n" +

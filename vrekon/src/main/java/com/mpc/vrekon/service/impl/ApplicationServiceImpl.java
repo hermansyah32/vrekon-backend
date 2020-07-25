@@ -52,7 +52,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
 
-    // TODO: Mengambil semua data beserta source config dan source translatenya
     public ResponseWrapper applicationGetDetail(HttpServletRequest servletRequest) {
         try {
             List<Application> applications = applicationRepository.findAll();
@@ -78,7 +77,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
 
-    // TODO: Mengambil data berdasarkan ID beserta source config dan source translatenya
     public ResponseWrapper applicationGetByID(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
             Application application = applicationRepository.findOne(Integer.valueOf(request.get("id").toString()));

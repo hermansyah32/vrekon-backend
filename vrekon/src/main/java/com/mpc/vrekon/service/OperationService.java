@@ -10,5 +10,5 @@ import java.util.Map;
 public interface OperationService {
     ResponseWrapper manualSyncron(HttpServletRequest servletRequest, Map<String, Object> request);
     ResponseWrapper importFile(HttpServletRequest servletRequest, Map<String, Object> request, MultipartFile[] files, HttpSession httpSession);
-    ResponseWrapper compareApplication(HttpServletRequest servletRequest, Map<String, Object> request);
+    ResponseWrapper compareApplication(HttpServletRequest servletRequest, Map<String, Object> request, HttpSession httpSession);
 }

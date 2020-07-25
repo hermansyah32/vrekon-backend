@@ -21,6 +21,7 @@ public class DataCheckScheduler{
 	Logger log = Logger.getLogger(getClass());
 	HttpServletRequest request = null;
 
+	//TODO : not done yet
 	public void databaseCheck() {
 		log.info("==== Sceduller Message Database Check =====");
 		try {

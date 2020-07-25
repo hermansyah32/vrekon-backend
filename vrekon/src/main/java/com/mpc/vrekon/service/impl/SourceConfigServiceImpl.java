@@ -73,11 +73,14 @@ public class SourceConfigServiceImpl implements SourceConfigService {
     /**
      * Add source config.
      * @serialData sourceType: mysql, oracle, files(used for upload file)
-     * @serialData add table name to request
+     * @serialData add tablename to request
+     * @var section = 3; 1 = sourceConfig added; 2 = sourceTranslate added; 3 = temporaryTable generated;
      */
     // TODO: add source config finish except add from files (excel and txt)
     public ResponseWrapper sourceConfigAdd(HttpServletRequest servletRequest, Map<String, Object> request, MultipartFile[] files, HttpSession httpSession) {
+        Integer section = 0;
         SourceConfig sourceConfig = null;
+        SourceTranslate[] sourceTranslates = new SourceTranslate[0];
         StringBuilder allFileNameSkiped = new StringBuilder();
         Application application;
         try{
@@ -99,6 +102,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
                         "",
                         request.get("tableName").toString(),
                         UtilHelper.convertDateToDB());
+                section = 1;
                 sourceConfigRepository.save(sourceConfig);
 
                 //create source translate
@@ -107,10 +111,13 @@ public class SourceConfigServiceImpl implements SourceConfigService {
                 String[] originalFieldName = StringUtils.deleteWhitespace(request.get("originalFieldName").toString()).split(",");
                 String[] temporaryFieldName =StringUtils.deleteWhitespace(request.get("temporaryFieldName").toString()).split(",");
                 if (originalFieldName.length == temporaryFieldName.length){
+                    sourceTranslates = new SourceTranslate[originalFieldName.length];
                     for (int fieldIndex = 0; fieldIndex < originalFieldName.length; fieldIndex++) {
                         SourceTranslate sourceTranslate = new SourceTranslate(sourceConfig.getId(),originalFieldName[fieldIndex], temporaryFieldName[fieldIndex]);
-                        sourceTranslateRepository.saveAndFlush(sourceTranslate);
+                        sourceTranslate = sourceTranslateRepository.saveAndFlush(sourceTranslate);
+                        sourceTranslates[fieldIndex] = sourceTranslate;
                     }
+                    section = 2;
                 }else {
                     throw new Exception("original field and temporary field have different field length");
                 }
@@ -156,7 +163,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
                         if (record != null){
                             Transaction temporaryTransaction = temporarySession.beginTransaction();
                             TemporaryTable temporaryTable = new TemporaryTable();
-                            temporaryTable.translateField("temporary" + application.getId(), temporaryFieldName, originalFieldName, record, false);
+                            temporaryTable.translateField("temporary" + application.getId(), sourceConfig.getId(), temporaryFieldName, originalFieldName, record, false);
                             temporarySession.createSQLQuery(temporaryTable.getNativeSQL()).executeUpdate();
                             temporaryTransaction.commit();
                         }
@@ -165,6 +172,7 @@ public class SourceConfigServiceImpl implements SourceConfigService {
                 //update application temporary table name
                 application.setTemporaryTabel(application.getId());
                 applicationRepository.save(application);
+                section = 3;
             }
             else {
                 StringBuilder allFileName = new StringBuilder();
@@ -254,8 +262,18 @@ public class SourceConfigServiceImpl implements SourceConfigService {
             return responseWrapper;
         }catch (Exception e){
             e.printStackTrace();
-            if (sourceConfig != null)
-                sourceConfigRepository.delete(sourceConfig);
+            log.debug("Section: " + section);
+            switch (section){
+                case 1:{
+                    sourceConfigRepository.delete(sourceConfig);
+                }
+                case 2: {
+                    for (int index = 0; index < sourceTranslates.length; index++) {
+                        sourceTranslateRepository.delete(sourceTranslates[index]);
+                    }
+                    break;
+                }
+            }
             responseWrapper = new ResponseWrapper<String>();
             responseWrapper.systemError(e.getMessage());
             return responseWrapper;
@@ -402,7 +420,6 @@ public class SourceConfigServiceImpl implements SourceConfigService {
         }
     }
 
-    // TODO: add more detail to response
     public ResponseWrapper sourceConfigGetByApplicationDetail(HttpServletRequest servletRequest, Map<String, Object> request) {
         try {
             List<SourceConfig> sourceConfigs = sourceConfigRepository.findByIdApplication(Integer.valueOf(request.get("idApplication").toString()));

@@ -1,5 +1,6 @@
-package com.mpc.vrekon.util.sourceconfig.spreadsheet;
+package com.mpc.vrekon.util.spreadsheet;
 
+import com.mpc.vrekon.util.io.NesiaFileStream;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -105,7 +106,7 @@ public class SpreadSheetWrapper {
 			if (sourceFile == null){
 				throw new Exception("Please specify destination path");
 			}
-			FileOutputStream outputStream = new FileOutputStream(new File(sourceFile));
+			FileOutputStream outputStream = new FileOutputStream(sourceFile);
 			workbook.write(outputStream);
 			outputStream.close();
 		} catch (Exception e) {
@@ -115,9 +116,12 @@ public class SpreadSheetWrapper {
 
 	public void SaveAs(String destination){
 		try {
-			FileOutputStream outputStream = new FileOutputStream(new File(destination));
-			workbook.write(outputStream);
-			outputStream.close();
+			FileOutputStream outputStream = NesiaFileStream.outputStream(destination);
+			if (outputStream != null){
+				workbook.write(outputStream);
+				outputStream.close();
+			}else
+				throw new Exception("Output Stream return null");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
